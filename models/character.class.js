@@ -20,18 +20,19 @@ class Character extends MovableObject {
   }
 
   animate() {
-
     setInterval(() => {
-      if (this.world.keyboard.RIGHT) { // Rechte Pfeiltaste --> bewegt sich nach rechts
+      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+        // Rechte Pfeiltaste --> bewegt sich nach rechts // && rechtes Ende definieren
         this.x += this.speed;
         this.otherDirection = false;
       }
 
-      if (this.world.keyboard.LEFT) { // Linke Pfeiltaste --> bewegt sich nach links
+      if (this.world.keyboard.LEFT && this.x > 0) {
+        // Linke Pfeiltaste --> bewegt sich nach links // && linkes Ende definieren
         this.x -= this.speed;
         this.otherDirection = true;
       }
-      this.world.camera_x = -this.x;
+      this.world.camera_x = -this.x + 100; // Die Kamera wird mit dem Character gekoppelt? (+ 100px Abstand)
     }, 1000 / 60);
 
     setInterval(() => {
@@ -39,10 +40,8 @@ class Character extends MovableObject {
         // Wenn rechte ODER linke Pfeiltaste gedrückt wird
 
         //Walk animation
-        let i = this.currentImage % this.IMAGES_WALKING.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
-        let path = this.IMAGES_WALKING[i];
-        this.img = this.imageCache[path];
-        this.currentImage++;
+        this.playAnimation(this.IMAGES_WALKING);
+
       }
     }, 50);
   }
