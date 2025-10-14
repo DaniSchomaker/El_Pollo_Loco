@@ -19,7 +19,12 @@ class Chicken extends MovableObject {
   }
 
   animate() {
-    this.moveLeft();
+    setInterval(() => {
+      //vordefinierte Funktion "setInterval()"
+      this.moveLeft();
+    }, 1000 / 60); // Alle 1000/60 Millisekunden wird das zwischen {} ausgeführt
+
+    
 
     setInterval(() => {
       // Bilderanmiation
