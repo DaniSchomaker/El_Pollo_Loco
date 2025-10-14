@@ -23,12 +23,20 @@ class MovableObject {
     });
   }
 
+  playAnimation(images) {
+    let i = this.currentImage % this.IMAGES_WALKING.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
+    let path = images[i];
+    this.img = this.imageCache[path];
+    this.currentImage++;
+  }
+
   moveRight() {
     console.log("moving right");
   }
 
   moveLeft() {
-    setInterval(() => { //vordefinierte Funktion "setInterval()"
+    setInterval(() => {
+      //vordefinierte Funktion "setInterval()"
       this.x -= this.speed; // Der Wert der x-Achse verringert sich --> "Bewegung nach links"
     }, 1000 / 60); // Alle 1000/60 Millisekunden wird das zwischen {} ausgeführt
   }
