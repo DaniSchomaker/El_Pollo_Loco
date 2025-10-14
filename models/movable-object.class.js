@@ -9,6 +9,24 @@ class MovableObject {
   speed = 0.15;
   otherDirection = false; // Bild spiegeln (wenn linke Pfeiltaste gedrückt wird)
 
+  // Gravitation
+  speedY = 0; // Geschwindigkeit Y-Achse --> Wie schnell etwas herunterfällt
+  acceleration = 2.5; // Beschleunigung
+
+  applyGravity() {
+    setInterval(() => {
+      if (this.isAboveGround() || this.speedY > 0) {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
+      }
+    }, 1000 / 25);
+  }
+
+  isAboveGround() {
+    // Abfrage, ob der Character in der Luft ist
+    return this.y < 147;
+  }
+
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
@@ -31,13 +49,14 @@ class MovableObject {
   }
 
   moveRight() {
-    console.log("moving right");
+    this.x += this.speed;
   }
 
   moveLeft() {
-    setInterval(() => {
-      //vordefinierte Funktion "setInterval()"
-      this.x -= this.speed; // Der Wert der x-Achse verringert sich --> "Bewegung nach links"
-    }, 1000 / 60); // Alle 1000/60 Millisekunden wird das zwischen {} ausgeführt
+    this.x -= this.speed;
+  }
+
+  jump() {
+    this.speedY = 30;
   }
 }
