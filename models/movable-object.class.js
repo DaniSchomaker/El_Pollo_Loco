@@ -21,6 +21,10 @@ class MovableObject {
     right: 0,
   };
 
+  energy = 100;
+
+  //////////////////////////////////////////////////////////
+
   applyGravity() {
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -85,6 +89,20 @@ class MovableObject {
       this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
     ); // Character OBEN < Chicken UNTEN
   }
+
+  hit() {
+    this.energy -= 5;
+    if(this.energy < 0) {
+      this.energy = 0;
+    }
+  }
+
+  isDead() {
+    return this.energy == 0;
+  }
+
+
+
 
   playAnimation(images) {
     let i = this.currentImage % this.IMAGES_WALKING.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
