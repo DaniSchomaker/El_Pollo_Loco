@@ -13,6 +13,14 @@ class MovableObject {
   speedY = 0; // Geschwindigkeit Y-Achse --> Wie schnell etwas herunterfällt
   acceleration = 2.5; // Beschleunigung
 
+  // für Collision --> ggf. umlagern in Klasse "CollidableObject"
+  offset = {
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  };
+
   applyGravity() {
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -39,6 +47,43 @@ class MovableObject {
       img.src = path;
       this.imageCache[path] = img;
     });
+  }
+
+  draw(ctx) {
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+  }
+
+  drawFrame(ctx) {
+    // für Collision ("blaue Boxen zeichnen")
+
+    if (this instanceof Character || this instanceof Chicken) {
+      // "instanceof" --> gilt nur für die Unterklassen von mo "Character" & "Chicken"
+      ctx.beginPath();
+      ctx.lineWidth = "5";
+      ctx.strokeStyle = "blue";
+      ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.stroke();
+    }
+
+    // NUR HILFE für das Offset, kann später gelöscht werden!
+    if (this instanceof Character || this instanceof Chicken) {
+      ctx.beginPath();
+      ctx.lineWidth = "5";
+      ctx.strokeStyle = "red";
+      ctx.rect(this.x + this.offset.left, this.y + this.offset.top, this.width - this.offset.left - this.offset.right, this.height - this.offset.top - this.offset.bottom);
+      ctx.stroke();
+    }
+  }
+
+  // character.isColliding(chicken);
+  isColliding(mo) {
+    // Offset für den roten inneren Kasten (statt der äußere blaue)
+    return (
+      this.x + this.width - this.offset.right > mo.x + mo.offset.left && //(warum +???) checken, ob rechte Seite des Characters > linke Seite Chicken // Offset --> "innerer roter Kasten in dem äußeren blauben"
+      this.y + this.height - this.offset.bottom > mo.y + mo.offset.top && // Character UNTEN > Chicken OBEN
+      this.x + this.offset.left < mo.x + mo.width - mo.offset.right && // Character LINKE Seite < Chicken RECHTE Seite
+      this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
+    ); // Character OBEN < Chicken UNTEN
   }
 
   playAnimation(images) {

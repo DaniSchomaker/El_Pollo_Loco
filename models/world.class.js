@@ -12,10 +12,21 @@ class World {
     this.keyboard = keyboard;
     this.draw();
     this.setWorld(); // "Hilfe", um die Welt an Objekte zu übergeben (Charakter?)
+    this.checkCollisions();
   }
 ''
   setWorld() {
     this.character.world = this; // mit "this" wird die aktuelle Instanz der World übergeben???
+  }
+
+  checkCollisions() {
+    setInterval(() => {
+      this.level.enemies.forEach((enemy)=>{
+        if(this.character.isColliding(enemy)) {
+          console.log('collision with Character ', enemy)
+        }
+      })
+    }, 200); 
   }
 
   draw() {
@@ -43,19 +54,33 @@ class World {
 
     if (mo.otherDirection) {
       // Bild wird gespiegelt
+      this.flipImage(mo);
+
+    }
+
+    mo.draw(this.ctx);
+
+    mo.drawFrame(this.ctx); // Zeichnung von "Boxen" für die Collision
+    
+
+
+
+    if (mo.otherDirection) {
+      // Falls der Context oben geändert wurde --> RÜCKGÄNGIG machen
+      this.flipImageBack(mo);
+    }
+  }
+
+  flipImage(mo) {
       this.ctx.save(); // Aktueller Stand vom Context (ctx) wird gespeichert
       this.ctx.translate(mo.width, 0); // Da gespiegelt wird, muss das Objekt verschoben werden (um die Breite des Elements)
       this.ctx.scale(-1, 1); // Alles wird gespiegelt 
       mo.x = mo.x * -1; // X-Koordinate wird gespiegelt
-    }
+  }
 
-    this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
-
-    if (mo.otherDirection) {
-      // Falls der Context oben geändert wurde --> RÜCKGÄNGIG machen
+  flipImageBack(mo) {
       mo.x = mo.x * -1;
       this.ctx.restore(); 
-    }
   }
 
   addObjectsToMap(objects) {

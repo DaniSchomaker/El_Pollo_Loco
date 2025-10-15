@@ -25,6 +25,15 @@ class Character extends MovableObject {
 
   world; // damit wir auf das Keyboard aus der World zugreifen können???
 
+  offset = { // für die Collidion: innerer roter Kasten
+    top: 120,
+    bottom: 30,
+    left: 40,
+    right: 30
+  };
+
+  //////////////////////////////////////////////////////////////////////////////////////
+
   constructor() {
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
     this.loadImages(this.IMAGES_WALKING);
