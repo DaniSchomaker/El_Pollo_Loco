@@ -1,11 +1,4 @@
-class MovableObject {
-  x = 120;
-  y = 280;
-  img;
-  height = 150;
-  width = 100;
-  imageCache = {}; // Bilder für die Laufanimation in einem JSON
-  currentImage = 0;
+class MovableObject extends DrawableObject {
   speed = 0.15;
   otherDirection = false; // Bild spiegeln (wenn linke Pfeiltaste gedrückt wird)
 
@@ -22,6 +15,7 @@ class MovableObject {
   };
 
   energy = 100;
+  lastHit = 0;
 
   //////////////////////////////////////////////////////////
 
@@ -39,45 +33,7 @@ class MovableObject {
     return this.y < 147;
   }
 
-  loadImage(path) {
-    this.img = new Image();
-    this.img.src = path;
-  }
 
-  loadImages(arr) {
-    // Bilder für die Anmiationen werden geladen
-    arr.forEach((path) => {
-      let img = new Image();
-      img.src = path;
-      this.imageCache[path] = img;
-    });
-  }
-
-  draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-  }
-
-  drawFrame(ctx) {
-    // für Collision ("blaue Boxen zeichnen")
-
-    if (this instanceof Character || this instanceof Chicken) {
-      // "instanceof" --> gilt nur für die Unterklassen von mo "Character" & "Chicken"
-      ctx.beginPath();
-      ctx.lineWidth = "5";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-    }
-
-    // NUR HILFE für das Offset, kann später gelöscht werden!
-    if (this instanceof Character || this instanceof Chicken) {
-      ctx.beginPath();
-      ctx.lineWidth = "5";
-      ctx.strokeStyle = "red";
-      ctx.rect(this.x + this.offset.left, this.y + this.offset.top, this.width - this.offset.left - this.offset.right, this.height - this.offset.top - this.offset.bottom);
-      ctx.stroke();
-    }
-  }
 
   // character.isColliding(chicken);
   isColliding(mo) {
@@ -94,6 +50,8 @@ class MovableObject {
     this.energy -= 5;
     if(this.energy < 0) {
       this.energy = 0;
+    } else {
+      this.lastHit = new Date().getTime(); // so speichert man einen Zeitpunkt (in Zahlenform)
     }
   }
 
@@ -101,11 +59,15 @@ class MovableObject {
     return this.energy == 0;
   }
 
-
+  isHurt() {
+    let timePassed = new Date().getTime() - this.lastHit; // aktueller Zeitpunkt ./. Zeitpunkt des letzten Treffers (in ms)
+    timePassed = timePassed / 1000; // Millisekunden in Sekunden umrechnen
+    return timePassed < 1; // wenn wir innerhalb der letzten 1 Sekunde getroffen wurden --> true
+  }
 
 
   playAnimation(images) {
-    let i = this.currentImage % this.IMAGES_WALKING.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
+    let i = this.currentImage % images.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
     let path = images[i];
     this.img = this.imageCache[path];
     this.currentImage++;
