@@ -9,7 +9,8 @@ function init() {
   console.log("My Character is", world.character);
 }
 
-window.addEventListener("keydown", (e) => { // Wenn Taste GEDRÜCKT wird
+window.addEventListener("keydown", (e) => {
+  // Wenn Taste GEDRÜCKT wird
   if (e.keyCode == 32) {
     keyboard.SPACE = true;
   }
@@ -29,9 +30,14 @@ window.addEventListener("keydown", (e) => { // Wenn Taste GEDRÜCKT wird
   if (e.keyCode == 40) {
     keyboard.DOWN = true;
   }
+
+  if (e.keyCode == 68) {
+    keyboard.D = true;
+  }
 });
 
-window.addEventListener("keyup", (e) => { // Wenn Taste LOSGELASSEN wird
+window.addEventListener("keyup", (e) => {
+  // Wenn Taste LOSGELASSEN wird
   if (e.keyCode == 32) {
     keyboard.SPACE = false;
   }
@@ -50,5 +56,9 @@ window.addEventListener("keyup", (e) => { // Wenn Taste LOSGELASSEN wird
 
   if (e.keyCode == 40) {
     keyboard.DOWN = false;
+  }
+
+  if (e.keyCode == 68) {
+    keyboard.D = false;
   }
 });
