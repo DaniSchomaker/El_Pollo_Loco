@@ -30,10 +30,12 @@ class MovableObject extends DrawableObject {
 
   isAboveGround() {
     // Abfrage, ob der Character in der Luft ist
-    return this.y < 147;
+    if (this instanceof ThrowableObject) {
+      return true; // damit die Flasche auf den Boden fallen kann
+    } else {
+      return this.y < 147;
+    }
   }
-
-
 
   // character.isColliding(chicken);
   isColliding(mo) {
@@ -48,7 +50,7 @@ class MovableObject extends DrawableObject {
 
   hit() {
     this.energy -= 5;
-    if(this.energy < 0) {
+    if (this.energy < 0) {
       this.energy = 0;
     } else {
       this.lastHit = new Date().getTime(); // so speichert man einen Zeitpunkt (in Zahlenform)
@@ -64,7 +66,6 @@ class MovableObject extends DrawableObject {
     timePassed = timePassed / 1000; // Millisekunden in Sekunden umrechnen
     return timePassed < 1; // wenn wir innerhalb der letzten 1 Sekunde getroffen wurden --> true
   }
-
 
   playAnimation(images) {
     let i = this.currentImage % images.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
