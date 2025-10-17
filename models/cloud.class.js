@@ -3,18 +3,20 @@ class Cloud extends MovableObject {
   width = 500;
   height = 250;
 
-  constructor() {
-    super().loadImage("img/5_background/layers/4_clouds/1.png");
-
-    this.x = Math.random() * 500;
-
+  constructor(path, x) {
+    super().loadImage(path);
+    this.x = x;
     this.animate();
   }
 
   animate() {
     setInterval(() => {
-      //vordefinierte Funktion "setInterval()"
       this.moveLeft();
+
+      if (this.x + this.width < 0) {
+        // damit sich die Wolken wiederholen, wenn sie durchgelaufen sind
+        this.x = 720 * 4;
+      }
     }, 1000 / 60); // Alle 1000/60 Millisekunden wird das zwischen {} ausgeführt
   }
 }
