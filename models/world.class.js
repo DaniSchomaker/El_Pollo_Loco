@@ -6,6 +6,7 @@ class World {
   keyboard;
   camera_x = 0; // Kamera soll später verschoben werden
   StatusBarHealth = new StatusBarHealth();
+  StatusBarCoins = new StatusBarCoins();
   throwableObjects = [];
 
   constructor(canvas, keyboard) {
@@ -34,7 +35,7 @@ class World {
       if (this.character.isColliding(enemy)) {
         this.character.hit();
         this.StatusBarHealth.setPercentage(this.character.energy);
-        // console.log('collision with Character, energy: ', this.character.energy);
+        this.StatusBarCoins.setPercentage(this.character.coins);
       }
     });
   }
@@ -54,6 +55,7 @@ class World {
 
     this.ctx.translate(-this.camera_x, 0); // Back
     this.addToMap(this.StatusBarHealth); // durch diese Einrahmung bleibt die Statusbar immer an der gleichen Stelle
+    this.addToMap(this.StatusBarCoins);
     this.ctx.translate(this.camera_x, 0); // Forwards
 
     this.addToMap(this.character); // nur EINER

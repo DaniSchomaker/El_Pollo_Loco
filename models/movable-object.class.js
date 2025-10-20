@@ -15,6 +15,7 @@ class MovableObject extends DrawableObject {
   };
 
   energy = 100;
+  coins = 0;
   lastHit = 0;
 
   //////////////////////////////////////////////////////////
