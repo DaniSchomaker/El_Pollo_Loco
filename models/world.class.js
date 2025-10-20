@@ -56,6 +56,7 @@ class World {
 
     this.ctx.translate(this.camera_x, 0); // verschiebt die Kamera nach links s.u.
     this.addObjectsToMap(this.level.backgroundObjects);
+    this.addObjectsToMap(this.level.clouds); // ALLE Objekte eines Arrays
 
     this.ctx.translate(-this.camera_x, 0); // Back
     this.addToMap(this.StatusBarHealth); // durch diese Einrahmung bleibt die Statusbar immer an der gleichen Stelle
@@ -65,7 +66,6 @@ class World {
     this.ctx.translate(this.camera_x, 0); // Forwards
 
     this.addToMap(this.character); // nur EINER
-    this.addObjectsToMap(this.level.clouds); // ALLE Objekte eines Arrays
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects); // warum ohne "level"?
 
