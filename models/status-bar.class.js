@@ -1,26 +1,19 @@
 class StatusBar extends DrawableObject {
-  IMAGES = [
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png", // 0
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png",
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png",
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png",
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png",
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png", // 5
-  ];
-
-  percentage = 100;
+  percentage = 0;
 
   constructor() {
     super();
-    this.loadImages(this.IMAGES);
-    this.x = 30;
-    this.y = 0;
     this.width = 200;
     this.height = 60;
-    this.setPercentage(100); // damit am Anfang der volle Ladebalken erscheint
+    this.images = [];
   }
 
-  // setPercentage (50);
+  load(images) {
+    this.images = images;
+    this.loadImages(images);
+  }
+
+  // // setPercentage (50);
   setPercentage(percentage) {
     this.percentage = percentage; // => Zahl zwischen 0 und 5 ermitteln
     let path = this.IMAGES[this.resolveImageIndex()]; // das passende Bild wird rausgesucht
