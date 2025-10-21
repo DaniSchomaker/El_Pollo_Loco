@@ -29,6 +29,7 @@ class World {
     setInterval(() => {
       this.checkCollisions();
       this.checkThrowObjects();
+      // console.log(this.character.y+120);
     }, 200);
   }
 
@@ -39,7 +40,7 @@ class World {
         this.StatusBarHealth.setPercentage(this.character.health);
         this.StatusBarCoin.setPercentage(this.character.coins);
         this.StatusBarBottle.setPercentage(this.character.bottles);
-        this.StatusBarEndboss.setPercentage(this.endboss.health);
+        // this.StatusBarEndboss.setPercentage(this.endboss.health);
       }
     });
   }
@@ -65,6 +66,8 @@ class World {
     this.addToMap(this.StatusBarEndboss);
     this.ctx.translate(this.camera_x, 0); // Forwards
 
+    this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottles); 
     this.addToMap(this.character); // nur EINER
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects); // warum ohne "level"?
