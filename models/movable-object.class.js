@@ -15,8 +15,6 @@ class MovableObject extends DrawableObject {
   };
 
   health = 100;
-  coins = 0;
-  bottles = 0;
   lastHit = 0;
 
   //////////////////////////////////////////////////////////
