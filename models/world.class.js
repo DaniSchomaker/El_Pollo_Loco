@@ -5,7 +5,7 @@ class World {
   ctx;
   keyboard;
   camera_x = 0; // Kamera soll später verschoben werden
-  StatusBarHealth = new StatusBarHealth(); 
+  StatusBarHealth = new StatusBarHealth();
   StatusBarCoin = new StatusBarCoin();
   StatusBarBottle = new StatusBarBottle();
   StatusBarEndboss = new StatusBarEndboss();
@@ -28,6 +28,7 @@ class World {
     // run passt nicht, oder?
     setInterval(() => {
       this.checkCollisions();
+      this.checkCoinCollisions();
       this.checkThrowObjects();
       // console.log(this.character.y+120);
     }, 200);
@@ -38,16 +39,34 @@ class World {
       if (this.character.isColliding(enemy)) {
         this.character.hit();
         this.StatusBarHealth.setPercentage(this.character.health);
-        this.StatusBarCoin.setPercentage(this.character.coins);
-        this.StatusBarBottle.setPercentage(this.character.bottles);
+
+        // this.StatusBarBottle.setPercentage(this.character.bottles);
         // this.StatusBarEndboss.setPercentage(this.endboss.health);
       }
     });
   }
 
+  checkCoinCollisions() {
+    this.level.coins.forEach((coin, index) => {  // INDEX???
+      if (this.character.isColliding(coin)) {
+        this.character.coins++;
+
+        
+        this.StatusBarCoin.setPercentage(this.character.coins);
+        
+        this.level.coins.splice(index, 1); // Coin verschwindet // INDEX??
+
+        console.log('coins: ' + this.character.coins);
+      }
+    });
+  }
+
   checkThrowObjects() {
-    if(this.keyboard.D) {
-      let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+    if (this.keyboard.D) {
+      let bottle = new ThrowableObject(
+        this.character.x + 100,
+        this.character.y + 100
+      );
       this.throwableObjects.push(bottle);
     }
   }
@@ -67,7 +86,7 @@ class World {
     this.ctx.translate(this.camera_x, 0); // Forwards
 
     this.addObjectsToMap(this.level.coins);
-    this.addObjectsToMap(this.level.bottles); 
+    this.addObjectsToMap(this.level.bottles);
     this.addToMap(this.character); // nur EINER
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects); // warum ohne "level"?
