@@ -43,10 +43,10 @@ const level1 = new Level (
     new Coin()
   ],
   [
-    new Bottle("img/6_salsa_bottle/1_salsa_bottle_on_ground.png", 150),
-    new Bottle("img/6_salsa_bottle/2_salsa_bottle_on_ground.png", 325),
-    new Bottle("img/6_salsa_bottle/1_salsa_bottle_on_ground.png", 468),
-    new Bottle("img/6_salsa_bottle/2_salsa_bottle_on_ground.png", 589),
-    new Bottle("img/6_salsa_bottle/1_salsa_bottle_on_ground.png", 425)
+    new Bottle(),
+    new Bottle(),
+    new Bottle(),
+    new Bottle(),
+    new Bottle()
   ]
 )
