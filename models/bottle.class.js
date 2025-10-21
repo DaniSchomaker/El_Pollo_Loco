@@ -9,7 +9,7 @@ class Bottle extends CollectableObject {
 
   offset = {
     // für die Collidion: innerer roter Kasten
-    top: 10,
+    top: 14,
     bottom: 10,
     left: 22,
     right: 18,

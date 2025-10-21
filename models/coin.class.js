@@ -3,8 +3,8 @@ class Coin extends CollectableObject {
 
   offset = {
     // für die Collidion: innerer roter Kasten
-    top: 50,
-    bottom: 50,
+    top: 55,
+    bottom: 55,
     left: 35,
     right: 35,       
      } ;
