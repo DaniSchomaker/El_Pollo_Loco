@@ -69,12 +69,12 @@ class MovableObject extends DrawableObject {
     return timePassed < 1; // wenn wir innerhalb der letzten 1 Sekunde getroffen wurden --> true
   }
 
-  playAnimation(images) {
-    let i = this.currentImage % images.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
-    let path = images[i];
-    this.img = this.imageCache[path];
-    this.currentImage++;
-  }
+  // playAnimation(images) {
+  //   let i = this.currentImage % images.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
+  //   let path = images[i];
+  //   this.img = this.imageCache[path];
+  //   this.currentImage++;
+  // }
 
   moveRight() {
     this.x += this.speed;

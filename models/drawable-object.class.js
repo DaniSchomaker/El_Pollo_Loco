@@ -28,17 +28,17 @@ class DrawableObject {
   drawFrame(ctx) {
     // für Collision ("blaue Boxen zeichnen")
 
-    if (this instanceof Character || this instanceof Chicken) {
-      // "instanceof" --> gilt nur für die Unterklassen von mo "Character" & "Chicken"
-      ctx.beginPath();
-      ctx.lineWidth = "5";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-    }
+    // if (this instanceof Character || this instanceof Chicken || this instanceof Coin || this instanceof Bottle) {
+    //   // "instanceof" --> gilt nur für die Unterklassen von mo "Character" & "Chicken"
+    //   ctx.beginPath();
+    //   ctx.lineWidth = "5";
+    //   ctx.strokeStyle = "blue";
+    //   ctx.rect(this.x, this.y, this.width, this.height);
+    //   ctx.stroke(); 
+    //   }
 
-    // NUR HILFE für das Offset, kann später gelöscht werden!
-    if (this instanceof Character || this instanceof Chicken) {
+      // NUR HILFE für das Offset, kann später gelöscht werden!
+    if (this instanceof Character || this instanceof Chicken || this instanceof Coin || this instanceof Bottle)  {
       ctx.beginPath();
       ctx.lineWidth = "5";
       ctx.strokeStyle = "red";
@@ -51,4 +51,13 @@ class DrawableObject {
       ctx.stroke();
     }
   }
+
+
+  playAnimation(images) {
+    let i = this.currentImage % images.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
+    let path = images[i];
+    this.img = this.imageCache[path];
+    this.currentImage++;
+  }
+
 }
