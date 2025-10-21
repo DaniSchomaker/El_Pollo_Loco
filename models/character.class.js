@@ -45,7 +45,7 @@ class Character extends MovableObject {
     // für die Collidion: innerer roter Kasten
     top: 120,
     bottom: 30,
-    left: 40,
+    left: 30,
     right: 30,
   };
 
