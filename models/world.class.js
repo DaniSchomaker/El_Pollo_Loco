@@ -20,6 +20,7 @@ class World {
     this.run(); // vorher: checkCollisions()
     this.totalCoins = this.level.coins.length; // Gesamtanzahl an Coins, die im Spiel vorhanden sind
     this.totalBottles = this.level.bottles.length;
+    this.endboss = this.level.enemies[this.level.enemies.length - 1]; // der letzte Eintrag in meinem Array Enemies ist der Endboss
   }
   "";
   setWorld() {
@@ -29,14 +30,15 @@ class World {
   run() {
     setInterval(() => {
       this.checkCollisions();
+      this.checkEndbossHitByBottle();
       this.checkThrowObjects();
-    }, 200); // Kann es an diesem Wert liegen, dass es manchmal harkt?
+    }, 150); // Kann es an diesem Wert liegen, dass es manchmal harkt?
   }
 
   checkCollisions() {
     this.checkEnemyCollision();
     this.checkCoinCollision();
-    this.checkBottleCollision(); 
+    this.checkBottleCollision();
   }
 
   checkEnemyCollision() {
@@ -48,8 +50,21 @@ class World {
     });
   }
 
+  checkEndbossHitByBottle() {
+    this.throwableObjects.forEach((bottle) => {
+      if (this.endboss.isColliding(bottle)) {
+        console.log("Endboss wurde getroffen!");
+        console.log(this.endboss.health);
+        this.endboss.hit();
+        this.StatusBarHealth.setPercentage(this.endboss.health);
+        
+      }
+    });
+  }
+
   checkCoinCollision() {
-    this.level.coins.forEach((coin, index) => { // INDEX, damit der richtige Coin gelöscht wird
+    this.level.coins.forEach((coin, index) => {
+      // INDEX, damit der richtige Coin gelöscht wird
       if (this.character.isColliding(coin)) {
         this.character.coins++;
 
@@ -87,7 +102,7 @@ class World {
         const percentage = (this.character.bottles / this.totalBottles) * 100; // doppelt --> refactor?
         this.StatusBarBottle.setPercentage(percentage);
       } else {
-        console.log("Keine Bottle verfügbar");
+        console.log("Keine Bottle verfügbar"); ///// LÖSCHEN
       }
     }
   }
