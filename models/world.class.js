@@ -19,6 +19,7 @@ class World {
     this.setWorld(); // "Hilfe", um die Welt an Objekte zu übergeben (Charakter?)
     this.run(); // vorher: checkCollisions()
     this.totalCoins = this.level.coins.length; // Gesamtanzahl an Coins, die im Spiel vorhanden sind
+    this.totalBottles = this.level.bottles.length;
   }
   "";
   setWorld() {
@@ -26,12 +27,11 @@ class World {
   }
 
   run() {
-    // run passt nicht, oder?
     setInterval(() => {
       this.checkCollisions();
       this.checkCoinCollisions();
+      this.checkBottleCollisions();
       this.checkThrowObjects();
-      // console.log(this.character.y+120);
     }, 200);
   }
 
@@ -40,15 +40,13 @@ class World {
       if (this.character.isColliding(enemy)) {
         this.character.hit();
         this.StatusBarHealth.setPercentage(this.character.health);
-
-        // this.StatusBarBottle.setPercentage(this.character.bottles);
-        // this.StatusBarEndboss.setPercentage(this.endboss.health);
       }
     });
   }
 
   checkCoinCollisions() {
-    this.level.coins.forEach((coin, index) => { // INDEX, damit der richtige Coin gelöscht wird
+    this.level.coins.forEach((coin, index) => {
+      // INDEX, damit der richtige Coin gelöscht wird
       if (this.character.isColliding(coin)) {
         this.character.coins++;
 
@@ -60,13 +58,34 @@ class World {
     });
   }
 
+  checkBottleCollisions() {
+    this.level.bottles.forEach((bottle, index) => {
+      // INDEX, damit die richtige Bottle gelöscht wird
+      if (this.character.isColliding(bottle)) {
+        this.character.bottles++;
+
+        const percentage = (this.character.bottles / this.totalBottles) * 100;
+        this.StatusBarBottle.setPercentage(percentage);
+
+        this.level.bottles.splice(index, 1); // Coin verschwindet
+      }
+    });
+  }
+
   checkThrowObjects() {
     if (this.keyboard.D) {
-      let bottle = new ThrowableObject(
-        this.character.x + 100,
-        this.character.y + 100
-      );
-      this.throwableObjects.push(bottle);
+      if (this.character.bottles > 0) {
+        let bottle = new ThrowableObject(
+          this.character.x + 50,
+          this.character.y + 100
+        );
+        this.throwableObjects.push(bottle);
+        this.character.bottles--;
+        const percentage = (this.character.bottles / this.totalBottles) * 100; // doppelt --> refactor?
+        this.StatusBarBottle.setPercentage(percentage);
+      } else {
+        console.log("Keine Bottle verfügbar");
+      }
     }
   }
 
