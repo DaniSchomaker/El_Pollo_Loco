@@ -29,13 +29,17 @@ class World {
   run() {
     setInterval(() => {
       this.checkCollisions();
-      this.checkCoinCollisions();
-      this.checkBottleCollisions();
       this.checkThrowObjects();
-    }, 200);
+    }, 200); // Kann es an diesem Wert liegen, dass es manchmal harkt?
   }
 
   checkCollisions() {
+    this.checkEnemyCollision();
+    this.checkCoinCollision();
+    this.checkBottleCollision(); 
+  }
+
+  checkEnemyCollision() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         this.character.hit();
@@ -44,9 +48,8 @@ class World {
     });
   }
 
-  checkCoinCollisions() {
-    this.level.coins.forEach((coin, index) => {
-      // INDEX, damit der richtige Coin gelöscht wird
+  checkCoinCollision() {
+    this.level.coins.forEach((coin, index) => { // INDEX, damit der richtige Coin gelöscht wird
       if (this.character.isColliding(coin)) {
         this.character.coins++;
 
@@ -58,7 +61,7 @@ class World {
     });
   }
 
-  checkBottleCollisions() {
+  checkBottleCollision() {
     this.level.bottles.forEach((bottle, index) => {
       // INDEX, damit die richtige Bottle gelöscht wird
       if (this.character.isColliding(bottle)) {
