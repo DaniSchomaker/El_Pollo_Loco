@@ -18,6 +18,7 @@ class World {
     this.draw();
     this.setWorld(); // "Hilfe", um die Welt an Objekte zu übergeben (Charakter?)
     this.run(); // vorher: checkCollisions()
+    this.totalCoins = this.level.coins.length; // Gesamtanzahl an Coins, die im Spiel vorhanden sind
   }
   "";
   setWorld() {
@@ -47,16 +48,14 @@ class World {
   }
 
   checkCoinCollisions() {
-    this.level.coins.forEach((coin, index) => {  // INDEX???
+    this.level.coins.forEach((coin, index) => { // INDEX, damit der richtige Coin gelöscht wird
       if (this.character.isColliding(coin)) {
         this.character.coins++;
 
-        
-        this.StatusBarCoin.setPercentage(this.character.coins);
-        
-        this.level.coins.splice(index, 1); // Coin verschwindet // INDEX??
+        const percentage = (this.character.coins / this.totalCoins) * 100;
+        this.StatusBarCoin.setPercentage(percentage);
 
-        console.log('coins: ' + this.character.coins);
+        this.level.coins.splice(index, 1); // Coin verschwindet
       }
     });
   }
