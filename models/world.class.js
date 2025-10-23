@@ -31,8 +31,9 @@ class World {
     setInterval(() => {
       this.checkCollisions();
       this.checkEndbossHitByBottle();
+      this.checkEnemyHitByBottle();
       this.checkThrowObjects();
-    }, 150); // Kann es an diesem Wert liegen, dass es manchmal harkt?
+    }, 200); // Kann es an diesem Wert liegen, dass es manchmal harkt?
   }
 
   checkCollisions() {
@@ -44,23 +45,92 @@ class World {
   checkEnemyCollision() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
+
+        // das reicht irgendwie noch nicht, wenn ich druchlaufe, dann wird das auch ausgelöst
+        const jumpedOnEnemy = 
+          this.character.speedY < 0 && // sicherstellen, dass Character von oben runterfällt
+          this.character.y + this.character.height - this.character.offset.bottom > enemy.y + enemy.offset.top; // Collision Character UNTEN & Chicken OBEN
+
+      if (jumpedOnEnemy) {
+        console.log("Jump-Attacke auf Enemy!");
+        enemy.health = 0;
+        enemy.speed = 0;
+        enemy.dead = true;
+        enemy.playAnimation(enemy.IMAGES_DEAD);
+
+        // if (enemy.isDead()) {
+        //   this.removeEnemy(enemy);
+        // }
+
+        // this.character.jump(); // Bounce
+      } else {
+
         this.character.hit();
         this.StatusBarHealth.setPercentage(this.character.health);
+        }
       }
     });
   }
 
-  checkEndbossHitByBottle() {
-    this.throwableObjects.forEach((bottle) => {
-      if (this.endboss.isColliding(bottle)) {
-        console.log("Endboss wurde getroffen!");
-        console.log(this.endboss.health);
+  // this.y + this.height - this.offset.bottom > mo.y + mo.offset.top
+
+  // checkEndbossHitByBottle() {
+  //   this.throwableObjects.forEach((bottle) => {
+  //     if (this.endboss.isColliding(bottle)) {
+  //       console.log("Endboss wurde getroffen!");
+  //       console.log(this.endboss.health);
+  //       this.endboss.hit();
+  //       this.StatusBarEndboss.setPercentage(this.endboss.health);
+  //     }
+  //   });
+  // }
+
+checkEndbossHitByBottle() {
+  for (let i = this.throwableObjects.length - 1; i >= 0; i--) {
+    const bottle = this.throwableObjects[i];
+
+    if (this.endboss.isColliding(bottle)) {
+      // Nur Schaden, wenn keine i-Frames aktiv
+      if (!this.endboss.isHurt()) {
         this.endboss.hit();
-        this.StatusBarHealth.setPercentage(this.endboss.health);
-        
+        this.StatusBarEndboss.setPercentage(this.endboss.health);
+      }
+
+      // Flasche nach dem ersten Treffer entfernen → kein Multi-Hit
+      this.throwableObjects.splice(i, 1);
+    }
+  }
+}
+
+
+
+
+  checkEnemyHitByBottle() {
+  this.throwableObjects.forEach((bottle) => {
+    this.level.enemies.forEach((enemy) => {
+
+      if (enemy.isColliding(bottle)) {
+        console.log("Enemy wurde getroffen!", enemy);
+
+        enemy.hit(); // zieht Health ab 
+
+        // Optional: Gegner löschen, wenn tot
+        // if (enemy.isDead()) {
+        //   this.removeEnemy(enemy);
+        // }
+
       }
     });
-  }
+  });
+}
+
+
+// removeEnemy(enemy) {
+//   const index = this.level.enemies.indexOf(enemy);
+//   if (index > -1) {
+//     this.level.enemies.splice(index, 1);
+//   }
+// }
 
   checkCoinCollision() {
     this.level.coins.forEach((coin, index) => {
@@ -85,7 +155,7 @@ class World {
         const percentage = (this.character.bottles / this.totalBottles) * 100;
         this.StatusBarBottle.setPercentage(percentage);
 
-        this.level.bottles.splice(index, 1); // Coin verschwindet
+        this.level.bottles.splice(index, 1); // Bottle verschwindet
       }
     });
   }
