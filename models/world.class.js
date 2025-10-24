@@ -19,7 +19,6 @@ class World {
     this.setWorld(); // "Hilfe", um die Welt an Objekte zu übergeben (Charakter?)
     this.run(); // vorher: checkCollisions()
     this.totalCoins = this.level.coins.length; // Gesamtanzahl an Coins, die im Spiel vorhanden sind
-    this.totalBottles = this.level.bottles.length;
     this.endboss = this.level.enemies[this.level.enemies.length - 1]; // der letzte Eintrag in meinem Array Enemies ist der Endboss
   }
   "";
@@ -33,7 +32,7 @@ class World {
       this.checkEndbossHitByBottle();
       this.checkEnemyHitByBottle();
       this.checkThrowObjects();
-    }, 150); // An diesem Wert liegt es, wenn es harkt
+    }, 50); // An diesem Wert liegt es, wenn es harkt
   }
 
   checkCollisions() {
@@ -45,105 +44,95 @@ class World {
   checkEnemyCollision() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
-
         // das reicht irgendwie noch nicht, wenn ich druchlaufe, dann wird das auch ausgelöst
-        const jumpedOnEnemy = 
+        const jumpedOnEnemy =
           this.character.speedY < 0 && // sicherstellen, dass Character von oben runterfällt
-          this.character.y + this.character.height - this.character.offset.bottom > enemy.y + enemy.offset.top; // Collision Character UNTEN & Chicken OBEN
+          this.character.y +
+            this.character.height -
+            this.character.offset.bottom >
+            enemy.y + enemy.offset.top; // Collision Character UNTEN & Chicken OBEN
 
-      if (jumpedOnEnemy) {
-        console.log("Jump-Attacke auf Enemy!");
-        enemy.health = 0;
-        enemy.speed = 0;
-        enemy.dead = true;
-        enemy.playAnimation(enemy.IMAGES_DEAD);
+        if (jumpedOnEnemy) {
+          console.log("Jump-Attacke auf Enemy!");
+          enemy.health = 0;
+          enemy.speed = 0;
+          enemy.dead = true;
+          enemy.playAnimation(enemy.IMAGES_DEAD);
 
-        // if (enemy.isDead()) {
-        //   this.removeEnemy(enemy);
-        // }
+          // if (enemy.isDead()) {
+          //   this.removeEnemy(enemy);
+          // }
 
-        // this.character.jump(); // Bounce
-      } else {
-
-        this.character.hit();
-        this.StatusBarHealth.setPercentage(this.character.health);
+          // this.character.jump(); // Bounce
+        } else {
+          this.character.hit();
+          this.StatusBarHealth.setPercentage(this.character.health);
         }
       }
     });
   }
 
+  checkEndbossHitByBottle() {
+    for (let i = 0; i < this.throwableObjects.length; i++) {
+      if (this.endboss.isColliding(this.throwableObjects[i])) {
+        // Nur Schaden, wenn Endboss gerade nicht im Hurt-Cooldown ist
+        if (!this.endboss.isHurt()) {
+          this.endboss.hit();
+          this.StatusBarEndboss.setPercentage(this.endboss.health);
+        }
 
+        // Flasche entfernen, verhindert Mehrfachtreffer
+        this.throwableObjects.splice(i, 1); // das ändern?
 
-checkEndbossHitByBottle() {
-  for (let i = 0; i < this.throwableObjects.length; i++) {
-
-    if (this.endboss.isColliding(this.throwableObjects[i])) {
-
-      // Nur Schaden, wenn Endboss gerade nicht im Hurt-Cooldown ist
-      if (!this.endboss.isHurt()) {
-        this.endboss.hit();
-        this.StatusBarEndboss.setPercentage(this.endboss.health);
+        // WICHTIG: damit wir das nächste Element nicht überspringen
+        // i--;
       }
-
-      // Flasche entfernen → verhindert Mehrfachtreffer
-      this.throwableObjects.splice(i, 1);
-
-      // WICHTIG: damit wir das nächste Element nicht überspringen
-      // i--;
     }
   }
-}
 
-// checkEndbossHitByBottle() {
-//   for (let i = 0; i < this.throwableObjects.length; i++) {
-//     const bottle = this.throwableObjects[i];
+  // checkEndbossHitByBottle() {
+  //   for (let i = 0; i < this.throwableObjects.length; i++) {
+  //     const bottle = this.throwableObjects[i];
 
-//     // wenn die Flasche bereits im Splash ist, überspringen
-//     if (bottle.hasHit) continue;
+  //     // wenn die Flasche bereits im Splash ist, überspringen
+  //     if (bottle.hasHit) continue;
 
-//     if (this.endboss.isColliding(bottle)) {
-//       if (!this.endboss.isHurt()) {
-//         this.endboss.hit();
-//         this.StatusBarEndboss.setPercentage(this.endboss.health);
-//       }
+  //     if (this.endboss.isColliding(bottle)) {
+  //       if (!this.endboss.isHurt()) {
+  //         this.endboss.hit();
+  //         this.StatusBarEndboss.setPercentage(this.endboss.health);
+  //       }
 
-//       // statt sofort zu löschen → Splash zeigen & später entfernen
-//       bottle.startSplash();
-      
+  //       // statt sofort zu löschen → Splash zeigen & später entfernen
+  //       bottle.startSplash();
 
-
-//     }
-//   }
-// }
-
-
+  //     }
+  //   }
+  // }
 
   checkEnemyHitByBottle() {
-  this.throwableObjects.forEach((bottle) => {
-    this.level.enemies.forEach((enemy) => {
+    this.throwableObjects.forEach((bottle) => {
+      this.level.enemies.forEach((enemy) => {
+        if (enemy.isColliding(bottle)) {
+          console.log("Enemy wurde getroffen!", enemy);
 
-      if (enemy.isColliding(bottle)) {
-        console.log("Enemy wurde getroffen!", enemy);
+          enemy.hit(); // zieht Health ab
 
-        enemy.hit(); // zieht Health ab 
-
-        // Optional: Gegner löschen, wenn tot
-        // if (enemy.isDead()) {
-        //   this.removeEnemy(enemy);
-        // }
-
-      }
+          // Optional: Gegner löschen, wenn tot
+          // if (enemy.isDead()) {
+          //   this.removeEnemy(enemy);
+          // }
+        }
+      });
     });
-  });
-}
+  }
 
-
-// removeEnemy(enemy) {
-//   const index = this.level.enemies.indexOf(enemy);
-//   if (index > -1) {
-//     this.level.enemies.splice(index, 1);
-//   }
-// }
+  // removeEnemy(enemy) {
+  //   const index = this.level.enemies.indexOf(enemy);
+  //   if (index > -1) {
+  //     this.level.enemies.splice(index, 1);
+  //   }
+  // }
 
   checkCoinCollision() {
     this.level.coins.forEach((coin, index) => {
@@ -161,34 +150,105 @@ checkEndbossHitByBottle() {
 
   checkBottleCollision() {
     this.level.bottles.forEach((bottle, index) => {
-      // INDEX, damit die richtige Bottle gelöscht wird
       if (this.character.isColliding(bottle)) {
+        // Inventar voll?
+        if (this.character.bottles >= this.character.MAX_BOTTLES) {
+          return;
+        }
+
+        // Bottle einsammeln
         this.character.bottles++;
 
-        const percentage = (this.character.bottles / this.totalBottles) * 100;
+        // HUD updaten (5 Bottles = 100%)
+        const percentage =
+          (this.character.bottles / this.character.MAX_BOTTLES) * 100;
         this.StatusBarBottle.setPercentage(percentage);
 
-        this.level.bottles.splice(index, 1); // Bottle verschwindet
+        // Bottle entfernen
+        this.level.bottles.splice(index, 1);
       }
     });
   }
 
-  checkThrowObjects() {
-    if (this.keyboard.D) {
-      if (this.character.bottles > 0) {
-        let bottle = new ThrowableObject(
-          this.character.x + 50,
-          this.character.y + 100
-        );
-        this.throwableObjects.push(bottle);
-        this.character.bottles--;
-        const percentage = (this.character.bottles / this.totalBottles) * 100; // doppelt --> refactor?
-        this.StatusBarBottle.setPercentage(percentage);
+  // checkThrowObjects() {
+  //   if (this.keyboard.D) {
+  //     if (!this.character.canThrow()) {
+  //       return; // Cooldown aktiv, nicht werfen (damit nicht mehrere Flaschen geworfen werden)
+  //     }
+  //     if (this.character.bottles > 0) {
+  //       let bottle = new ThrowableObject(
+  //         this.character.x + 50,
+  //         this.character.y + 100
+  //       );
+  //       this.throwableObjects.push(bottle);
+  //       this.character.bottles--;
+
+  //       this.character.lastThrow = Date.now();
+
+  //       const percentage =
+  //         (this.character.bottles / this.character.MAX_BOTTLES) * 100; // doppelt --> refactor?
+  //       this.StatusBarBottle.setPercentage(percentage);
+  //     } else {
+  //       console.log("Keine Bottle verfügbar"); ///// LÖSCHEN
+  //     }
+  //   }
+  // }
+
+checkThrowObjects() { // Funktion ist zu lang! Refactorn!
+  if (this.keyboard.D) {
+
+    // Prüfen, ob Wurf möglich ist (cooldown)
+    if (!this.character.canThrow()) {
+      return;
+    }
+
+    if (this.character.bottles > 0) {
+
+      let bottleX;
+      let bottleY = this.character.y + 100; 
+
+      // Startpunkt abhängig von Blickrichtung
+      if (this.character.otherDirection) {
+        // Character schaut nach LINKS → Bottle links spawnen
+        bottleX = this.character.x - 20;
       } else {
-        console.log("Keine Bottle verfügbar"); ///// LÖSCHEN
+        // Character schaut nach RECHTS → Bottle rechts spawnen
+        bottleX = this.character.x + 50;
       }
+
+      // Flasche erzeugen
+      let bottle = new ThrowableObject(bottleX, bottleY);
+
+      // Richtung der Flasche setzen
+      if (this.character.otherDirection) {
+        bottle.speedX = -10;
+        bottle.otherDirection = true;  
+      } else {
+        bottle.speedX = 10;
+        bottle.otherDirection = false; 
+      }
+
+      this.throwableObjects.push(bottle);
+
+      // Bottle-Anzahl reduzieren
+      this.character.bottles--;
+
+      // Cooldown starten
+      this.character.lastThrow = Date.now();
+
+      // StatusBar aktualisieren
+      const percentage = (this.character.bottles / this.character.MAX_BOTTLES) * 100;
+      this.StatusBarBottle.setPercentage(percentage);
+
+    } else {
+      console.log("Keine Bottle verfügbar");
     }
   }
+}
+
+
+
+
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // das alte Bild gelöscht
