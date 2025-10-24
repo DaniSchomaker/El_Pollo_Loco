@@ -4,6 +4,7 @@ class Character extends MovableObject {
   speed = 10;
   coins = 0;
   bottles = 0;
+  MAX_BOTTLES = 5;
 
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -89,7 +90,7 @@ class Character extends MovableObject {
       this.world.camera_x = -this.x + 100; // Die Kamera wird mit dem Character gekoppelt? (+ 100px Abstand)
     }, 1000 / 60);
 
-    setInterval(() => {
+    setInterval(() => { // Endboss braucht ähnliches --> refactor?
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
       } else if(this.isHurt()) {
