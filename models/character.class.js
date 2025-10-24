@@ -4,6 +4,7 @@ class Character extends MovableObject {
   speed = 10;
   coins = 0;
   bottles = 0;
+  lastThrow = 0; // Zeitpunkt des letzten Wurfs in ms
   MAX_BOTTLES = 5;
 
   IMAGES_WALKING = [
@@ -12,7 +13,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-23.png",
     "img/2_character_pepe/2_walk/W-24.png",
     "img/2_character_pepe/2_walk/W-25.png",
-    "img/2_character_pepe/2_walk/W-26.png"
+    "img/2_character_pepe/2_walk/W-26.png",
   ];
 
   IMAGES_JUMPING = [
@@ -24,7 +25,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/3_jump/J-36.png",
     "img/2_character_pepe/3_jump/J-37.png",
     "img/2_character_pepe/3_jump/J-38.png",
-    "img/2_character_pepe/3_jump/J-39.png"
+    "img/2_character_pepe/3_jump/J-39.png",
   ];
 
   IMAGES_DEAD = [
@@ -34,13 +35,13 @@ class Character extends MovableObject {
     "img/2_character_pepe/5_dead/D-54.png",
     "img/2_character_pepe/5_dead/D-55.png",
     "img/2_character_pepe/5_dead/D-56.png",
-    "img/2_character_pepe/5_dead/D-57.png"
+    "img/2_character_pepe/5_dead/D-57.png",
   ];
 
   IMAGES_HURT = [
     "img/2_character_pepe/4_hurt/H-41.png",
     "img/2_character_pepe/4_hurt/H-42.png",
-    "img/2_character_pepe/4_hurt/H-43.png"
+    "img/2_character_pepe/4_hurt/H-43.png",
   ];
 
   world; // damit wir auf das Keyboard aus der World zugreifen können???
@@ -90,10 +91,11 @@ class Character extends MovableObject {
       this.world.camera_x = -this.x + 100; // Die Kamera wird mit dem Character gekoppelt? (+ 100px Abstand)
     }, 1000 / 60);
 
-    setInterval(() => { // Endboss braucht ähnliches --> refactor?
+    setInterval(() => {
+      // Endboss braucht ähnliches --> refactor?
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
-      } else if(this.isHurt()) {
+      } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
@@ -106,5 +108,11 @@ class Character extends MovableObject {
         }
       }
     }, 50);
+  }
+
+  canThrow() { // damit nicht mehrere Flaschen direkt geworfen werden
+    let timePassed = Date.now() - this.lastThrow;
+    timePassed = timePassed / 1000; // in Sekunden
+    return timePassed > 0.3; // 300 ms Cooldown
   }
 }
