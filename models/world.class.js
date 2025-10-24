@@ -33,7 +33,7 @@ class World {
       this.checkEndbossHitByBottle();
       this.checkEnemyHitByBottle();
       this.checkThrowObjects();
-    }, 200); // Kann es an diesem Wert liegen, dass es manchmal harkt?
+    }, 150); // An diesem Wert liegt es, wenn es harkt
   }
 
   checkCollisions() {
@@ -72,36 +72,49 @@ class World {
     });
   }
 
-  // this.y + this.height - this.offset.bottom > mo.y + mo.offset.top
 
-  // checkEndbossHitByBottle() {
-  //   this.throwableObjects.forEach((bottle) => {
-  //     if (this.endboss.isColliding(bottle)) {
-  //       console.log("Endboss wurde getroffen!");
-  //       console.log(this.endboss.health);
-  //       this.endboss.hit();
-  //       this.StatusBarEndboss.setPercentage(this.endboss.health);
-  //     }
-  //   });
-  // }
 
 checkEndbossHitByBottle() {
-  for (let i = this.throwableObjects.length - 1; i >= 0; i--) {
-    const bottle = this.throwableObjects[i];
+  for (let i = 0; i < this.throwableObjects.length; i++) {
 
-    if (this.endboss.isColliding(bottle)) {
-      // Nur Schaden, wenn keine i-Frames aktiv
+    if (this.endboss.isColliding(this.throwableObjects[i])) {
+
+      // Nur Schaden, wenn Endboss gerade nicht im Hurt-Cooldown ist
       if (!this.endboss.isHurt()) {
         this.endboss.hit();
         this.StatusBarEndboss.setPercentage(this.endboss.health);
       }
 
-      // Flasche nach dem ersten Treffer entfernen → kein Multi-Hit
+      // Flasche entfernen → verhindert Mehrfachtreffer
       this.throwableObjects.splice(i, 1);
+
+      // WICHTIG: damit wir das nächste Element nicht überspringen
+      // i--;
     }
   }
 }
 
+// checkEndbossHitByBottle() {
+//   for (let i = 0; i < this.throwableObjects.length; i++) {
+//     const bottle = this.throwableObjects[i];
+
+//     // wenn die Flasche bereits im Splash ist, überspringen
+//     if (bottle.hasHit) continue;
+
+//     if (this.endboss.isColliding(bottle)) {
+//       if (!this.endboss.isHurt()) {
+//         this.endboss.hit();
+//         this.StatusBarEndboss.setPercentage(this.endboss.health);
+//       }
+
+//       // statt sofort zu löschen → Splash zeigen & später entfernen
+//       bottle.startSplash();
+      
+
+
+//     }
+//   }
+// }
 
 
 
