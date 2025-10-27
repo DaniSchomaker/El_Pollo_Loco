@@ -2,6 +2,8 @@ class Chicken extends MovableObject {
   y = 365; // y-Achse aus der Oberklasse wird überschrieben
   height = 60;
   width = 60;
+  health = 20;
+
   IMAGES_WALKING = [
     "img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
     "img/3_enemies_chicken/chicken_normal/1_walk/2_w.png",
@@ -15,7 +17,8 @@ class Chicken extends MovableObject {
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
 
-    this.x = 200 + Math.random() * 500; // Startpunkt: 200px + zufälliger Wert zwischen 0 und 500
+    // this.x = 200 + Math.random() * 500; // Startpunkt: 200px + zufälliger Wert zwischen 0 und 500
+    this.x = 200 + Math.random() * 2000;
     this.speed = 0.15 + Math.random() * 0.5;
 
     this.animate();
@@ -37,15 +40,14 @@ class Chicken extends MovableObject {
     }, 200);
   }
 
-    die() {
-    this.health = 0;
+  die() {
+    if (this.dead) return; 
+    this.dead = true; 
     this.speed = 0;
-    this.dead = true;
 
-    // nach kurzer Zeit entfernen
+    // nach kurzer Zeit entfernen (World räumt in removeDeadEnemies() auf)
     setTimeout(() => {
       this.markedForRemoval = true;
     }, 800);
   }
 }
-
