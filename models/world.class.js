@@ -248,17 +248,24 @@ class World {
         const percentage =
           (this.character.bottles / this.character.MAX_BOTTLES) * 100;
         this.StatusBarBottle.setPercentage(percentage);
-      } 
+      }
     }
   }
 
   // ===== Helpers =====
   // Prüft, ob ein Stomp vorliegt
   isStomp(enemy) {
-    const inAir = this.character.isAboveGround();
-    const falling = this.character.speedY < 0;
+    // Prüfen, ob Character fällt
+    if (this.character.speedY >= 0) return false;
 
-    return inAir && falling;
+    // Horizontal über dem Gegner?
+    const characterCenterX = this.character.x + this.character.width / 2;
+    const enemyLeft = enemy.x + enemy.offset.left;
+    const enemyRight = enemy.x + enemy.width - enemy.offset.right;
+    const overEnemyHorizontally =
+      characterCenterX >= enemyLeft && characterCenterX <= enemyRight;
+
+    return overEnemyHorizontally;
   }
 
   // Wendet Schaden auf Spieler an

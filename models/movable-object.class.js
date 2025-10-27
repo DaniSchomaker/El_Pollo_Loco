@@ -33,9 +33,10 @@ class MovableObject extends DrawableObject {
     if (this instanceof ThrowableObject) {
       return true; // damit die Flasche auf den Boden fallen kann
     } else {
-      return this.y < 147;
+      return this.y < 150;
     }
   }
+
 
   // character.isColliding(chicken);
   isColliding(mo) {

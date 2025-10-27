@@ -38,7 +38,7 @@ class DrawableObject {
     //   }
 
       // NUR HILFE für das Offset, kann später gelöscht werden!
-    if (this instanceof Character || this instanceof Chicken || this instanceof Coin || this instanceof Bottle || this instanceof Endboss)  {
+    if (this instanceof Character || this instanceof Chicken || this instanceof Coin || this instanceof Bottle || this instanceof Endboss || this instanceof ThrowableObject || this instanceof ChickenSmall)  {
       ctx.beginPath();
       ctx.lineWidth = "5";
       ctx.strokeStyle = "red";
