@@ -248,9 +248,7 @@ class World {
         const percentage =
           (this.character.bottles / this.character.MAX_BOTTLES) * 100;
         this.StatusBarBottle.setPercentage(percentage);
-      } else {
-        console.log("Keine Bottle verfügbar");
-      }
+      } 
     }
   }
 
