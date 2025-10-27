@@ -110,11 +110,13 @@ class World {
 
   checkEnemyCollision() {
     this.level.enemies.forEach((enemy) => {
-      if (!this.character.isColliding(enemy)) return; //// BRAUCHE ICH DAS?
+      if (!this.character.isColliding(enemy)) return;
       if (enemy.dead) return;
 
       if (this.isStomp(enemy)) {
-        enemy.die(); // --> Chicken-Klasse / oder besser movable object? Für Character/Chicken/Endboss?
+        enemy.health = 0;
+        enemy.die(); // Chicken --> Animation, entfernen
+
         return;
       }
 
@@ -165,22 +167,6 @@ class World {
     this.removeDeadEnemies(); // identisch zu Enemy-Collision
   }
 
-  // checkEnemyHitByBottle() {
-  //   this.throwableObjects.forEach((bottle) => {
-  //     this.level.enemies.forEach((enemy) => {
-  //       if (enemy.isColliding(bottle)) {
-  //         console.log("Enemy wurde getroffen!", enemy);
-
-  //         enemy.hit(); // zieht Health ab
-
-  //         // Optional: Gegner löschen, wenn tot
-  //         // if (enemy.isDead()) {
-  //         //   this.removeEnemy(enemy);
-  //         // }
-  //       }
-  //     });
-  //   });
-  // }
 
   checkCoinCollision() {
     this.level.coins.forEach((coin, index) => {
@@ -279,12 +265,11 @@ class World {
 
   // Wendet Schaden auf Spieler an
   applyPlayerDamage() {
-  if (this.character.isHurt()) return; // i-frames: schon kürzlich getroffen → nix tun
+    if (this.character.isHurt()) return; // i-frames: schon kürzlich getroffen → nix tun
 
-  this.character.hit(); 
-  this.StatusBarHealth.setPercentage(this.character.health);
-}
-
+    this.character.hit();
+    this.StatusBarHealth.setPercentage(this.character.health);
+  }
 
   // Entfernt erledigte Gegner
   removeDeadEnemies() {
