@@ -279,9 +279,12 @@ class World {
 
   // Wendet Schaden auf Spieler an
   applyPlayerDamage() {
-    this.character.hit();
-    this.StatusBarHealth.setPercentage(this.character.health);
-  }
+  if (this.character.isHurt()) return; // i-frames: schon kürzlich getroffen → nix tun
+
+  this.character.hit(); 
+  this.StatusBarHealth.setPercentage(this.character.health);
+}
+
 
   // Entfernt erledigte Gegner
   removeDeadEnemies() {
