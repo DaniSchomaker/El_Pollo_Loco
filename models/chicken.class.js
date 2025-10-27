@@ -36,4 +36,16 @@ class Chicken extends MovableObject {
       this.playAnimation(this.IMAGES_WALKING);
     }, 200);
   }
+
+    die() {
+    this.health = 0;
+    this.speed = 0;
+    this.dead = true;
+
+    // nach kurzer Zeit entfernen
+    setTimeout(() => {
+      this.markedForRemoval = true;
+    }, 800);
+  }
 }
+

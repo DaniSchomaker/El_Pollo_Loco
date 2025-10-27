@@ -54,6 +54,8 @@ class Character extends MovableObject {
     right: 30,
   };
 
+  justStomped = false; // "Flag" --> kurz nach Stomp keinen Gegenschaden kassieren
+
   //////////////////////////////////////////////////////////////////////////////////////
 
   constructor() {
@@ -89,6 +91,10 @@ class Character extends MovableObject {
       }
 
       this.world.camera_x = -this.x + 100; // Die Kamera wird mit dem Character gekoppelt? (+ 100px Abstand)
+
+      // Merke Y-Position für den nächsten Frame (benötige ich für's Hünhchen plätten)
+      this.lastY = this.y;
+
     }, 1000 / 60);
 
     setInterval(() => {
@@ -110,7 +116,8 @@ class Character extends MovableObject {
     }, 50);
   }
 
-  canThrow() { // damit nicht mehrere Flaschen direkt geworfen werden
+  canThrow() {
+    // damit nicht mehrere Flaschen direkt geworfen werden
     let timePassed = Date.now() - this.lastThrow;
     timePassed = timePassed / 1000; // in Sekunden
     return timePassed > 0.3; // 300 ms Cooldown
