@@ -8,8 +8,14 @@ body {
     background-image: url("img/5_background/desert.png");
     background-size: cover;
     /* background-position: center; */
+    font-family: 'Fredoka', sans-serif;
 }
 
 canvas {
     background-color: black;
+}
+
+h1 {
+  font-family: 'Rye', serif;
+  font-size: 40px;
 }
