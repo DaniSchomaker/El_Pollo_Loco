@@ -130,8 +130,6 @@ class World {
     for (let i = 0; i < this.throwableObjects.length; i++) {
       const bottle = this.throwableObjects[i];
 
-      // if (bottle.hasHit) continue; // Splash läuft schon
-
       if (this.endboss.isColliding(bottle)) {
         if (!this.endboss.isHurt()) {
           // dein Hurt-Cooldown
@@ -144,27 +142,9 @@ class World {
 
     // Aufräumen: Splash-Fertig → entfernen
     this.throwableObjects = this.throwableObjects.filter(
-      (b) => !b.markedForRemoval
+      (bottle) => !bottle.markedForRemoval
     );
   }
-
-  // checkEndbossHitByBottle() {
-  //   for (let i = 0; i < this.throwableObjects.length; i++) {
-  //     if (this.endboss.isColliding(this.throwableObjects[i])) {
-  //       // Nur Schaden, wenn Endboss gerade nicht im Hurt-Cooldown ist
-  //       if (!this.endboss.isHurt()) {
-  //         this.endboss.hit();
-  //         this.StatusBarEndboss.setPercentage(this.endboss.health);
-  //       }
-
-  //       // Flasche entfernen, verhindert Mehrfachtreffer
-  //       this.throwableObjects.splice(i, 1); // das ändern?
-
-  //       // WICHTIG: damit wir das nächste Element nicht überspringen
-  //       // i--;
-  //     }
-  //   }
-  // }
 
   checkEnemyHitByBottle() {
     for (let i = 0; i < this.throwableObjects.length; i++) {
@@ -190,6 +170,30 @@ class World {
 
     this.removeDeadEnemies(); // identisch zu Enemy-Collision
   }
+
+  // checkEnemyHitByBottle() {
+  //   for (let i = 0; i < this.throwableObjects.length; i++) {
+  //     const bottle = this.throwableObjects[i];
+  //     if (bottle.hasHit) continue; // Bottle ist schon im Splash
+
+  //     this.level.enemies.forEach((enemy) => {
+  //       if (enemy.dead) return; // tote Gegner ignorieren
+  //       if (!enemy.isColliding(bottle)) return; // kein Treffer
+
+  //       // Schaden anwenden (bei dir: 20; Chicken haben 20 HP → One-Hit)
+  //       this.applyBottleHit(enemy);
+
+  //       // Splash abspielen (Bottle friert ein, spielt Frames, markiert sich zum Entfernen)
+  //       bottle.startSplash();
+  //     });
+  //   }
+
+  //   // Aufräumen: Bottles nach Splash + tote Gegner entfernen
+  //   this.throwableObjects = this.throwableObjects.filter(
+  //     (bottle) => !bottle.markedForRemoval
+  //   );
+  //   this.removeDeadEnemies();
+  // }
 
   checkCoinCollision() {
     this.level.coins.forEach((coin, index) => {
@@ -249,6 +253,8 @@ class World {
 
         // Flasche erzeugen
         let bottle = new ThrowableObject(bottleX, bottleY);
+        bottle.world = this; // <— wichtig: damit die Flasche auf level.groundLevel zugreifen kann ///////////////
+        this.throwableObjects.push(bottle); ///////////////////////
 
         // Richtung der Flasche setzen
         if (this.character.otherDirection) {
