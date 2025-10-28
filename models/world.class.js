@@ -128,21 +128,43 @@ class World {
 
   checkEndbossHitByBottle() {
     for (let i = 0; i < this.throwableObjects.length; i++) {
-      if (this.endboss.isColliding(this.throwableObjects[i])) {
-        // Nur Schaden, wenn Endboss gerade nicht im Hurt-Cooldown ist
+      const bottle = this.throwableObjects[i];
+
+      // if (bottle.hasHit) continue; // Splash läuft schon
+
+      if (this.endboss.isColliding(bottle)) {
         if (!this.endboss.isHurt()) {
+          // dein Hurt-Cooldown
           this.endboss.hit();
           this.StatusBarEndboss.setPercentage(this.endboss.health);
         }
-
-        // Flasche entfernen, verhindert Mehrfachtreffer
-        this.throwableObjects.splice(i, 1); // das ändern?
-
-        // WICHTIG: damit wir das nächste Element nicht überspringen
-        // i--;
+        bottle.startSplash(); // Splash anzeigen
       }
     }
+
+    // Aufräumen: Splash-Fertig → entfernen
+    this.throwableObjects = this.throwableObjects.filter(
+      (b) => !b.markedForRemoval
+    );
   }
+
+  // checkEndbossHitByBottle() {
+  //   for (let i = 0; i < this.throwableObjects.length; i++) {
+  //     if (this.endboss.isColliding(this.throwableObjects[i])) {
+  //       // Nur Schaden, wenn Endboss gerade nicht im Hurt-Cooldown ist
+  //       if (!this.endboss.isHurt()) {
+  //         this.endboss.hit();
+  //         this.StatusBarEndboss.setPercentage(this.endboss.health);
+  //       }
+
+  //       // Flasche entfernen, verhindert Mehrfachtreffer
+  //       this.throwableObjects.splice(i, 1); // das ändern?
+
+  //       // WICHTIG: damit wir das nächste Element nicht überspringen
+  //       // i--;
+  //     }
+  //   }
+  // }
 
   checkEnemyHitByBottle() {
     for (let i = 0; i < this.throwableObjects.length; i++) {
@@ -152,9 +174,11 @@ class World {
       this.level.enemies.forEach((enemy) => {
         if (bottleUsed) return; // Flasche nur 1x wirksam
         if (enemy.dead) return; // tote Gegner ignorieren
+        if (bottle.hasHit) return; // bereits im Splash
         if (!enemy.isColliding(bottle)) return;
 
         this.applyBottleHit(enemy);
+        bottle.startSplash();
         bottleUsed = true;
       });
 
@@ -166,7 +190,6 @@ class World {
 
     this.removeDeadEnemies(); // identisch zu Enemy-Collision
   }
-
 
   checkCoinCollision() {
     this.level.coins.forEach((coin, index) => {
@@ -185,7 +208,7 @@ class World {
   checkBottleCollision() {
     this.level.bottles.forEach((bottle, index) => {
       if (this.character.isColliding(bottle)) {
-        // Inventar voll?
+        // Inventar voll? --> Keine Bottle einsammeln
         if (this.character.bottles >= this.character.MAX_BOTTLES) {
           return;
         }
@@ -193,7 +216,7 @@ class World {
         // Bottle einsammeln
         this.character.bottles++;
 
-        // HUD updaten (5 Bottles = 100%)
+        // StatusBarBottle updaten (5 Bottles = 100%)
         const percentage =
           (this.character.bottles / this.character.MAX_BOTTLES) * 100;
         this.StatusBarBottle.setPercentage(percentage);
@@ -248,13 +271,14 @@ class World {
         const percentage =
           (this.character.bottles / this.character.MAX_BOTTLES) * 100;
         this.StatusBarBottle.setPercentage(percentage);
-      } 
+      }
     }
   }
 
   // ===== Helpers =====
   // Prüft, ob ein Stomp vorliegt
   isStomp(enemy) {
+    // brauche ich hier den Übergabeparameter?
     const inAir = this.character.isAboveGround();
     const falling = this.character.speedY < 0;
 

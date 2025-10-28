@@ -53,12 +53,47 @@ class ThrowableObject extends MovableObject {
     }
   }
 
-  markHit() {
-    this.hasHit = true;
-    this.speed = 0;
-    this.speedY = 0;
-    this.acceleration = 0;
-    
-    //this.playAnimation(this.IMAGES_SPLASH);
-  }
+// startSplash() {
+//   if (this.hasHit) return;
+//   this.hasHit = true;
+
+//   // Bewegung stoppen
+//   this.speed = 0;
+//   this.speedY = 0;
+//   this.acceleration = 0;
+
+//   // Splash einmalig abspielen (dauert automatisch so lang wie Frames vorhanden sind)
+//   this.playAnimationOnce(this.IMAGES_BOTTLE_SPLASH);
+
+//   // nach kurzer Zeit entfernen (z. B. 500–800 ms)
+//   setTimeout(() => {
+//     this.markedForRemoval = true;
+//   }, 800);
+// }
+
+
+startSplash() {
+  // if (this.hasHit) return;
+  this.hasHit = true;
+
+  // Bewegung stoppen
+  this.speed = 0;
+  this.speedY = 0;
+  this.acceleration = 0;
+
+  // Splash-Frames EINMAL abspielen, dann Flasche entfernen
+  let i = 0;
+  const frames = this.IMAGES_BOTTLE_SPLASH;
+  const timer = setInterval(() => {
+    if (i >= frames.length) {
+      clearInterval(timer);
+      this.markedForRemoval = true; // World filtert später raus
+      return;
+    }
+    const path = frames[i++];
+    const img = this.imageCache?.[path];
+    if (img) this.img = img; // defensiv
+  }, 80); 
+}
+
 }
