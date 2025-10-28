@@ -12,6 +12,13 @@ class ChickenSmall extends MovableObject {
 
   IMAGES_DEAD = ["img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
+    offset = {
+    top: 0, // 10 funktioniert nicht??
+    bottom: 10,
+    left: 10,
+    right: 10,
+  };
+
   constructor() {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
@@ -40,7 +47,7 @@ class ChickenSmall extends MovableObject {
     }, 200);
   }
 
-  die() {
+  die() { // DOPPELT!
     if (this.dead) return; 
     this.dead = true; 
     this.speed = 0;
