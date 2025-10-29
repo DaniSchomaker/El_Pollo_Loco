@@ -68,11 +68,14 @@ class ThrowableObject extends MovableObject {
   startSplash() {
     // if (this.hasHit) return;
     this.hasHit = true;
+    SoundHub.playOne(SoundHub.bottleShattering);
 
+   
     // Bewegung stoppen
     this.speed = 0;
     this.speedY = 0;
     this.acceleration = 0;
+    
 
     // Splash-Frames EINMAL abspielen, dann Flasche entfernen
     let i = 0;
