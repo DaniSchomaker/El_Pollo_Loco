@@ -94,77 +94,79 @@ class Character extends MovableObject {
     this.animate();
   }
 
-  animate() {
-    let lastActionTime = Date.now(); // merkt sich, wann zuletzt etwas getan wurde
+animate() {
+  this.lastActionTime = Date.now();
+  this.isWalkingSoundPlaying = false; // Sound-Flag
 
-    // === Bewegung & Kamera (60 FPS) ===
-    setInterval(() => {
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-        this.moveRight();
-        this.otherDirection = false;
-        lastActionTime = Date.now();
+  // Bewegung & Kamera (60 FPS)
+  setInterval(() => {
+    let didAction = false;
+    let moving = false;
+
+    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+      this.moveRight();
+      this.otherDirection = false;
+      moving = true;
+      didAction = true;
+    }
+
+    if (this.world.keyboard.LEFT && this.x > 0) {
+      this.moveLeft();
+      this.otherDirection = true;
+      moving = true;
+      didAction = true;
+    }
+
+    if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+      this.jump();
+      SoundHub.playOne(SoundHub.jump);
+      
+      // --- Laufgeräusch sofort stoppen beim Sprung ---
+      if (this.isWalkingSoundPlaying) {
+        SoundHub.pauseOne(SoundHub.walking);
+        this.isWalkingSoundPlaying = false;
       }
 
-      if (this.world.keyboard.LEFT && this.x > 0) {
-        this.moveLeft();
-        this.otherDirection = true;
-        lastActionTime = Date.now();
-      }
+      didAction = true;
+    }
 
-      if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-        this.jump();
-        lastActionTime = Date.now();
-      }
+    // --- Soundsteuerung für Laufen ---
+    if (moving && !this.isWalkingSoundPlaying) {
+      SoundHub.playOne(SoundHub.walking);
+      this.isWalkingSoundPlaying = true;
+    } else if (!moving && this.isWalkingSoundPlaying) {
+      SoundHub.pauseOne(SoundHub.walking);
+      this.isWalkingSoundPlaying = false;
+    }
 
-      this.world.camera_x = -this.x + 100;
-      this.lastY = this.y; // merkt Y-Position für Stomp-Erkennung
-    }, 1000 / 60);
+    // Kamera & Position
+    if (didAction) this.lastActionTime = Date.now();
+    this.world.camera_x = -this.x + 100;
+    this.lastY = this.y;
+  }, 1000 / 60);
 
-    // === Standard-Animationen (20 FPS) ===
-    setInterval(() => {
-      if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-        return;
-      }
+  // Animationen (20 FPS)
+  setInterval(() => {
+    if (this.isDead())        return this.playAnimation(this.IMAGES_DEAD);
+    if (this.isHurt())        return this.playAnimation(this.IMAGES_HURT);
+    if (this.isAboveGround()) return this.playAnimation(this.IMAGES_JUMPING);
+    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)
+      return this.playAnimation(this.IMAGES_WALKING);
+  }, 50);
 
-      if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-        return;
-      }
+  // Idle / Long-Idle (5 FPS)
+  setInterval(() => {
+    const k = this.world.keyboard;
+    const inactiveSec = (Date.now() - this.lastActionTime) / 1000;
+    const isIdle =
+      !this.isDead() && !this.isHurt() && !this.isAboveGround() &&
+      !k.RIGHT && !k.LEFT && !k.SPACE;
 
-      if (this.isAboveGround()) {
-        this.playAnimation(this.IMAGES_JUMPING);
-        return;
-      }
-
-      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-        this.playAnimation(this.IMAGES_WALKING);
-        return;
-      }
-    }, 50);
-
-    // === Idle & Long-Idle (langsamer, 5 FPS) ===
-    setInterval(() => {
-      const inactiveFor = (Date.now() - lastActionTime) / 1000; // Sekunden seit letzter Aktion
-
-      const isIdleState =
-        !this.isDead() &&
-        !this.isHurt() &&
-        !this.isAboveGround() &&
-        !this.world.keyboard.RIGHT &&
-        !this.world.keyboard.LEFT &&
-        !this.world.keyboard.SPACE;
-
-      if (!isIdleState) return; // nur wenn nichts passiert
-
-      if (inactiveFor >= 15) {
-        // nach 15 Sekunden
-        this.playAnimation(this.IMAGES_LONG_IDLE);
-      } else {
-        this.playAnimation(this.IMAGES_IDLE);
-      }
-    }, 200);
-  }
+    if (!isIdle) return;
+    if (inactiveSec >= 15) this.playAnimation(this.IMAGES_LONG_IDLE);
+    else this.playAnimation(this.IMAGES_IDLE);
+  }, 200);
+}
 
   canThrow() {
     // damit nicht mehrere Flaschen direkt geworfen werden
