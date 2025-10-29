@@ -115,6 +115,7 @@ class World {
 
       if (this.isStomp(enemy)) {
         enemy.health = 0;
+        SoundHub.playOne(SoundHub.chickenStomp);
         enemy.die(); // Chicken --> Animation, entfernen
 
         return;
@@ -130,9 +131,12 @@ class World {
     for (let i = 0; i < this.throwableObjects.length; i++) {
       const bottle = this.throwableObjects[i];
 
+      if (bottle.hasHit) continue; // mehrfaches Triggern wird verhindert (sonst wird Splash-Sound mehrfach abgespielt)
+
       if (this.endboss.isColliding(bottle)) {
         if (!this.endboss.isHurt()) {
           // dein Hurt-Cooldown
+          
           this.endboss.hit();
           this.StatusBarEndboss.setPercentage(this.endboss.health);
         }
@@ -171,35 +175,13 @@ class World {
     this.removeDeadEnemies(); // identisch zu Enemy-Collision
   }
 
-  // checkEnemyHitByBottle() {
-  //   for (let i = 0; i < this.throwableObjects.length; i++) {
-  //     const bottle = this.throwableObjects[i];
-  //     if (bottle.hasHit) continue; // Bottle ist schon im Splash
-
-  //     this.level.enemies.forEach((enemy) => {
-  //       if (enemy.dead) return; // tote Gegner ignorieren
-  //       if (!enemy.isColliding(bottle)) return; // kein Treffer
-
-  //       // Schaden anwenden (bei dir: 20; Chicken haben 20 HP → One-Hit)
-  //       this.applyBottleHit(enemy);
-
-  //       // Splash abspielen (Bottle friert ein, spielt Frames, markiert sich zum Entfernen)
-  //       bottle.startSplash();
-  //     });
-  //   }
-
-  //   // Aufräumen: Bottles nach Splash + tote Gegner entfernen
-  //   this.throwableObjects = this.throwableObjects.filter(
-  //     (bottle) => !bottle.markedForRemoval
-  //   );
-  //   this.removeDeadEnemies();
-  // }
-
   checkCoinCollision() {
     this.level.coins.forEach((coin, index) => {
       // INDEX, damit der richtige Coin gelöscht wird
       if (this.character.isColliding(coin)) {
         this.character.coins++;
+        SoundHub.playOne(SoundHub.collectCoin);
+
 
         const percentage = (this.character.coins / this.totalCoins) * 100;
         this.StatusBarCoin.setPercentage(percentage);
@@ -219,6 +201,7 @@ class World {
 
         // Bottle einsammeln
         this.character.bottles++;
+        SoundHub.playOne(SoundHub.collectBottle);
 
         // StatusBarBottle updaten (5 Bottles = 100%)
         const percentage =
