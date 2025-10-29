@@ -1,5 +1,5 @@
 class SoundHub {
-    static mainTheme = new Audio('../audio/mainTheme.mp3');
+    static mainTheme = new Audio('../audio/007_2.WAV'); // NAMEN ÄNDERN
     static walking = new Audio('../audio/walking.mp3');
     static jump = new Audio('../audio/jump.mp3');
     static chickenStomp = new Audio('../audio/chickenStomp.mp3');
@@ -7,6 +7,7 @@ class SoundHub {
     static collectBottle = new Audio ('../audio/collectBottle.mp3');
     static bottleShattering = new Audio('../audio/bottleShattering.mp3');
     static snoring = new Audio('../audio/snoring.mp3');
+    static chickenClucks = new Audio('../audio/chickenClucks.mp3');
 
     // Array, das alle definierten Audio-Dateien enthält
     static allSounds = [
@@ -17,7 +18,8 @@ class SoundHub {
         SoundHub.collectCoin,
         SoundHub.collectBottle,
         SoundHub.bottleShattering,
-        SoundHub.snoring
+        SoundHub.snoring,
+        SoundHub.chickenClucks
     ];
 
 

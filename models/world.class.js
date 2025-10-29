@@ -137,6 +137,7 @@ class World {
         if (!this.endboss.isHurt()) {
           // dein Hurt-Cooldown
           
+          SoundHub.playOne(SoundHub.chickenClucks);
           this.endboss.hit();
           this.StatusBarEndboss.setPercentage(this.endboss.health);
         }
