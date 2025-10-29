@@ -12,11 +12,11 @@ class ChickenSmall extends MovableObject {
 
   IMAGES_DEAD = ["img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
-    offset = {
-    top: 0, // 10 funktioniert nicht??
+  offset = {
+    top: 5, 
     bottom: 10,
     left: 10,
-    right: 10,
+    right: 10
   };
 
   constructor() {

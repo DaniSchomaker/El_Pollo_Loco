@@ -4,13 +4,20 @@ class ThrowableObject extends MovableObject {
   speedX = 10; // Standard: nach rechts
   // GROUND_LEVEL = 370;
 
+  offset = {
+    top: 20, 
+    bottom: 20,
+    left: 15,
+    right: 15,
+  };
+
   hasHit = false;
 
   IMAGES_BOTTLE_ROTATION = [
     "img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png",
     "img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png",
     "img/6_salsa_bottle/bottle_rotation/3_bottle_rotation.png",
-    "img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png",
+    "img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png"
   ];
 
   IMAGES_BOTTLE_SPLASH = [
@@ -19,7 +26,7 @@ class ThrowableObject extends MovableObject {
     "img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png",
     "img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png",
     "img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png",
-    "img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
+    "img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png"
   ];
 
   constructor(x, y) {
@@ -44,12 +51,12 @@ class ThrowableObject extends MovableObject {
       if (this.hasHit) return; // nach Treffer: Bewegung stoppen
       this.x += this.speedX;
 
-    // Prüfen, ob Flasche auf den Boden trifft → Splash abspielen
-    const ground = this.world.level.groundLevel; // vereinfachen?
-    if (this.y + this.height >= ground) {
-      this.startSplash();
-    }
-  }, 25);
+      // Prüfen, ob Flasche auf den Boden trifft → Splash abspielen
+      const ground = this.world.level.groundLevel; // vereinfachen?
+      if (this.y + this.height >= ground) {
+        this.startSplash();
+      }
+    }, 25);
 
     // Flug-Animation (Rotation)
     setInterval(() => {

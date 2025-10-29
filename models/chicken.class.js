@@ -4,6 +4,13 @@ class Chicken extends MovableObject {
   width = 60;
   health = 20;
 
+  offset = {
+    top: 10, 
+    bottom: 10,
+    left: 10,
+    right: 10,
+  };
+
   IMAGES_WALKING = [
     "img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
     "img/3_enemies_chicken/chicken_normal/1_walk/2_w.png",
@@ -41,8 +48,9 @@ class Chicken extends MovableObject {
   }
 
   die() {
-    if (this.dead) return; 
-    this.dead = true; 
+    // DOPPELT
+    if (this.dead) return;
+    this.dead = true;
     this.speed = 0;
 
     // nach kurzer Zeit entfernen (World räumt in removeDeadEnemies() auf)
