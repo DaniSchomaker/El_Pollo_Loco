@@ -165,6 +165,7 @@ class World {
         this.applyBottleHit(enemy);
         bottle.startSplash();
         bottleUsed = true;
+        SoundHub.playOne(SoundHub.chickenStomp);
       });
 
       if (bottleUsed) {

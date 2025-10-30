@@ -38,6 +38,7 @@ window.addEventListener("keyup", (e) => {
   // Wenn Taste LOSGELASSEN wird
   if (e.key === " ") {
     keyboard.SPACE = false;
+    e.preventDefault();   // Browser soll NICHT seinen eigenen Play/Pause-Quatsch machen
   }
 
   if (e.key === "ArrowLeft") {
@@ -60,3 +61,19 @@ window.addEventListener("keyup", (e) => {
     keyboard.D = false;
   }
 });
+
+function toggleSound() {
+  const button = document.getElementById("sound_toggle");
+  const icon = document.getElementById('sound_icon');
+  const isMuted = button.classList.toggle("sound_off"); // CSS-Klasse wechseln
+
+  if (isMuted) {
+    SoundHub.isMuted = true;
+    SoundHub.pauseAll(); 
+    icon.src = './img/soundbar/sound_off.png';
+  } else {
+    SoundHub.isMuted = false;
+    SoundHub.playLoop(SoundHub.mainTheme);
+    icon.src = './img/soundbar/sound_on.png';
+  }
+}

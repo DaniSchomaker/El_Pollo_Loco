@@ -1,21 +1,63 @@
 body {
-    margin: 0;
-    min-height: 100vh;   
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* justify-content: center; */
-    background-image: url("img/5_background/desert.png");
-    background-size: cover;
-    /* background-position: center; */
-    font-family: 'Fredoka', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  background-image: url("img/5_background/desert.png");
+  background-size: cover;
+  /* background-position: center; */
+  font-family: "Fredoka", sans-serif;
 }
 
 canvas {
-    background-color: black;
+  background-color: black;
 }
 
 h1 {
-  font-family: 'Rye', serif;
+  font-family: "Rye", serif;
   font-size: 40px;
 }
+
+.game_wrapper {
+  position: relative; /* Bezugspunkt für .soundbar */
+  display: inline-block; /* Canvas-Größe bestimmt Container */
+}
+
+.soundbar {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%); /* zentriert horizontal */
+  z-index: 5; /* liegt über dem Canvas */
+  border: none;
+}
+
+.soundbar button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.soundbar button:focus {
+  outline: none; 
+}
+
+.soundbar img {
+  height: 40px;
+  width: 40px;
+  border: 2px solid white;
+  border-radius: 90px;
+  transition: transform 0.1s ease;
+}
+
+.soundbar img:hover {
+  transform: scale(1.04);
+}
+
+.soundbar img:active {
+  transform: scale(0.98);
+}
+
+
