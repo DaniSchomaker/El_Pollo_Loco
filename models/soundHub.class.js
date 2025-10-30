@@ -39,10 +39,10 @@ class SoundHub {
   }
 
   static playLoop(sound) {
-    if (SoundHub.isMuted) return; 
-    sound.loop = true; 
-    sound.volume = 0.6; 
-    sound.currentTime = 0; 
+    if (SoundHub.isMuted) return;
+    sound.loop = true;
+    sound.volume = 0.6;
+    sound.currentTime = 0;
     sound.play().catch(() => {
       // Fallback, falls Autoplay blockiert wird
       console.warn(
@@ -66,5 +66,59 @@ class SoundHub {
     sound.pause(); // Pausiert das übergebene Audio
     // const instrumentImg = document.getElementById(instrumentId); // nur wichtig für die Visualisierung
     // instrumentImg.classList.remove('active'); // nur wichtig für die Visualisierung
+  }
+
+  // static toggleSound() {
+  //   const icon = document.getElementById("sound_icon");
+
+  //   SoundHub.isMuted = !SoundHub.isMuted;
+
+  //   if (SoundHub.isMuted) {
+  //     SoundHub.pauseAll();
+  //     icon.src = "./img/soundbar/sound_off.png";
+  //   } else {
+  //     SoundHub.playLoop(SoundHub.mainTheme);
+  //     icon.src = "./img/soundbar/sound_on.png";
+  //   }
+
+  //   // Zustand speichern
+  //   SoundHub.saveToLocalStorage();
+  // }
+
+  static toggleSound() {
+    const button = document.getElementById("sound_toggle");
+    const icon = document.getElementById("sound_icon");
+    const isMuted = button.classList.toggle("sound_off"); // CSS-Klasse wechseln
+
+    if (isMuted) {
+      SoundHub.isMuted = true;
+      SoundHub.pauseAll();
+      icon.src = "./img/soundbar/sound_off.png";
+    } else {
+      SoundHub.isMuted = false;
+      SoundHub.playLoop(SoundHub.mainTheme);
+      icon.src = "./img/soundbar/sound_on.png";
+    }
+    SoundHub.saveToLocalStorage();
+  }
+
+  static saveToLocalStorage() {
+    localStorage.setItem("isMuted", JSON.stringify(SoundHub.isMuted));
+  }
+
+  static getFromLocalStorage() {
+    const storedValue = localStorage.getItem("isMuted");
+    if (storedValue !== null) {
+      SoundHub.isMuted = JSON.parse(storedValue);
+      if (SoundHub.isMuted) {
+        SoundHub.pauseAll();
+        document.getElementById("sound_icon").src =
+          "./img/soundbar/sound_off.png";
+      } else {
+        SoundHub.playLoop(SoundHub.mainTheme);
+        document.getElementById("sound_icon").src =
+          "./img/soundbar/sound_on.png";
+      }
+    }
   }
 }
