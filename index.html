@@ -50,11 +50,29 @@
     <div class="game_wrapper">
       <section class="soundbar">
         <button id="sound_toggle" onclick="SoundHub.toggleSound()">
-          <img id="sound_icon" src="./img/soundbar/sound_on.png" alt="sound on" />
+          <img
+            id="sound_icon"
+            src="./img/soundbar/sound_on.png"
+            alt="sound on"
+          />
         </button>
       </section>
 
       <canvas id="canvas" width="720" height="480"> </canvas>
+
+
+      <div class="endscreen d_none" id="endscreen_winner">
+        <img src="img/You won, you lost/You won A.png" alt="You won">
+        <!-- <button class="restartButton" onclick="startGame()">
+          play again
+        </button> -->
+      </div>
+
+
+
+
+
+
     </div>
   </body>
 </html>
