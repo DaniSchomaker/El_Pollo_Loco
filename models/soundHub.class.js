@@ -2,6 +2,7 @@ class SoundHub {
     static mainTheme = new Audio('../audio/007_2.WAV'); // NAMEN ÄNDERN
     static walking = new Audio('../audio/walking.mp3');
     static jump = new Audio('../audio/jump.mp3');
+    static hurt = new Audio ('../audio/hurt.mp3');
     static chickenStomp = new Audio('../audio/chickenStomp.mp3');
     static collectCoin = new Audio ('../audio/collectCoin.mp3');
     static collectBottle = new Audio ('../audio/collectBottle.mp3');
@@ -14,6 +15,7 @@ class SoundHub {
         SoundHub.mainTheme, 
         SoundHub.walking,
         SoundHub.jump, 
+        SoundHub.hurt,
         SoundHub.chickenStomp,
         SoundHub.collectCoin,
         SoundHub.collectBottle,

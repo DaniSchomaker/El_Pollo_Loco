@@ -121,7 +121,7 @@ class World {
         return;
       }
 
-      this.applyPlayerDamage();
+      this.applyCharacterDamage();
     });
 
     this.removeDeadEnemies();
@@ -276,9 +276,10 @@ class World {
   }
 
   // Wendet Schaden auf Spieler an
-  applyPlayerDamage() {
+  applyCharacterDamage() {
     if (this.character.isHurt()) return; // i-frames: schon kürzlich getroffen → nix tun
 
+    SoundHub.playOne(SoundHub.hurt);
     this.character.hit();
     this.StatusBarHealth.setPercentage(this.character.health);
   }
