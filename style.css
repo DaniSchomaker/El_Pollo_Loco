@@ -74,6 +74,20 @@ h1 {
   text-align: center;
 }
 
+.endscreen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.play_again {
+  position: absolute;
+  bottom: 40px;
+  padding: 12px 24px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
 .d_none {
   display: none;
 }
