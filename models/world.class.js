@@ -37,6 +37,7 @@ class World {
 
       if (this.character.isDead()) {
         stopGame();
+        this.resetWorld();
         showEndscreen("lose");
       }
 
@@ -45,8 +46,9 @@ class World {
 
         setTimeout(() => {
           stopGame();
+          this.resetWorld();
           showEndscreen("win");
-        }, 700); 
+        }, 700);
       }
     }, 50); // An diesem Wert liegt es, wenn es harkt
   }
@@ -59,17 +61,20 @@ class World {
     this.addObjectsToMap(this.level.clouds); // ALLE Objekte eines Arrays
 
     this.ctx.translate(-this.camera_x, 0); // Back
+
     this.addToMap(this.StatusBarHealth); // durch diese Einrahmung bleibt die Statusbar immer an der gleichen Stelle
     this.addToMap(this.StatusBarCoin);
     this.addToMap(this.StatusBarBottle);
     this.addToMap(this.StatusBarEndboss);
+
     this.ctx.translate(this.camera_x, 0); // Forwards
 
-    this.addObjectsToMap(this.level.coins);
-    this.addObjectsToMap(this.level.bottles);
-    this.addToMap(this.character); // nur EINER
-    this.addObjectsToMap(this.level.enemies);
-    this.addObjectsToMap(this.throwableObjects); // warum ohne "level"?
+    // nur zeichnen, wenn vorhanden
+    if (this.level.coins) this.addObjectsToMap(this.level.coins);
+    if (this.level.bottles) this.addObjectsToMap(this.level.bottles);
+    if (this.character) this.addToMap(this.character);
+    if (this.level.enemies) this.addObjectsToMap(this.level.enemies);
+    if (this.throwableObjects) this.addObjectsToMap(this.throwableObjects); // warum ohne Level?
 
     this.ctx.translate(-this.camera_x, 0); // zurück verschieben ??? s.o.
 
@@ -330,4 +335,14 @@ class World {
   //   this.character = null;
   //   this.endboss = null;
   // }
+
+  resetWorld() {
+    // alles aus der Szene entfernen
+    this.level.enemies = [];
+    this.level.coins = [];
+    this.level.bottles = [];
+    this.throwableObjects = [];
+    this.character = null;
+    // this.endboss = null;
+  }
 }
