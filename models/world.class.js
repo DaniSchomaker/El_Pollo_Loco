@@ -10,7 +10,7 @@ class World {
   StatusBarBottle = new StatusBarBottle();
   StatusBarEndboss = new StatusBarEndboss();
   throwableObjects = [];
-  // gameOver = false;
+  gameOver = false;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -40,9 +40,13 @@ class World {
         showEndscreen("lose");
       }
 
-      if (this.endboss.isDead()) {
-        stopGame();
-        showEndscreen("win");
+      if (this.endboss.isDead() && !this.gameOver) {
+        this.gameOver = true;
+
+        setTimeout(() => {
+          stopGame();
+          showEndscreen("win");
+        }, 700); 
       }
     }, 50); // An diesem Wert liegt es, wenn es harkt
   }
@@ -314,16 +318,16 @@ class World {
     this.throwableObjects.splice(index, 1);
   }
 
-//   endGame() {
-//   this.gameOver = true;
+  //   endGame() {
+  //   this.gameOver = true;
 
-//   this.level.enemies = [];
-//   this.level.coins = [];
-//   this.level.bottles = [];
-//   this.throwableObjects = [];
+  //   this.level.enemies = [];
+  //   this.level.coins = [];
+  //   this.level.bottles = [];
+  //   this.throwableObjects = [];
 
-//   // Character + Endboss "deaktivieren"
-//   this.character = null;
-//   this.endboss = null;
-// }
+  //   // Character + Endboss "deaktivieren"
+  //   this.character = null;
+  //   this.endboss = null;
+  // }
 }
