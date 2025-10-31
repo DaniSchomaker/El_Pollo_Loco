@@ -1,6 +1,6 @@
 class Character extends MovableObject {
   height = 280;
-  y = 150;
+  y = 90;
   speed = 10;
   coins = 0;
   bottles = 0;
@@ -147,8 +147,8 @@ animate() {
 
   // Animationen (20 FPS)
   setInterval(() => {
-    if (this.isDead())        return this.playAnimation(this.IMAGES_DEAD);
-    if (this.isHurt())        return this.playAnimation(this.IMAGES_HURT);
+    if (this.isDead()) return this.playAnimation(this.IMAGES_DEAD);
+    if (this.isHurt()) return this.playAnimation(this.IMAGES_HURT);
     if (this.isAboveGround()) return this.playAnimation(this.IMAGES_JUMPING);
     if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)
       return this.playAnimation(this.IMAGES_WALKING);
