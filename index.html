@@ -3,11 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="./img/Favicon.png"
-    />
+    <title>El Pollo Loco</title>
+    
+    <link rel="icon" type="image/x-icon" href="./img/Favicon.png" />
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./styles/fonts.css" />
 
@@ -35,16 +33,15 @@
     <script src="./models/cloud.class.js"></script>
     <script src="./models/background-object.class.js"></script>
     <script src="./models/throwable-object.class.js"></script>
-        
+
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
     <script src="./models/world.class.js"></script>
-
     
-    
-
-    <title>El Pollo Loco</title>
   </head>
+
+  <!-- TO DO: Breiter Screen -->
+
   <body onload="SoundHub.getFromLocalStorage(); init();">
     <h1>El Pollo Loco</h1>
 
@@ -61,19 +58,14 @@
 
       <canvas id="canvas" width="720" height="480"> </canvas>
 
+      <div id="endscreen" class="endscreen d_none">
+        <img id="endscreen_img" src="" alt="Endscreen You won" />
+        <button class="button startGame" onclick="startGame()">play again</button>
 
-      <div id="endscreen" class="endscreen d_none" >
-        <img id="endscreen_img" src="" alt="Endscreen You won">
-        <button class="play_again" onclick="startGame()">
-          play again
-        </button>
+        <a href="./impressum.html" class="button button_impressum" target="_blank">Impressum</a>
+        <a href="./credits.html" class="button button_credits" target="_blank">Credits</a>
+
       </div>
-
-
-
-
-
-
     </div>
   </body>
 </html>
