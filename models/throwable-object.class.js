@@ -47,7 +47,7 @@ class ThrowableObject extends MovableObject {
     // const GROUND_LEVEL = 430;
 
     // Bewegung (horizontal)
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.hasHit) return; // nach Treffer: Bewegung stoppen
       this.x += this.speedX;
 
@@ -59,7 +59,7 @@ class ThrowableObject extends MovableObject {
     }, 25);
 
     // Flug-Animation (Rotation)
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.hasHit) return; // nach Treffer: keine Animation mehr
       this.playAnimation(this.IMAGES_BOTTLE_ROTATION);
     }, 80);
@@ -80,9 +80,9 @@ class ThrowableObject extends MovableObject {
     // Splash-Frames EINMAL abspielen, dann Flasche entfernen
     let i = 0;
     // let frames = this.IMAGES_BOTTLE_SPLASH;
-    let timerSplash = setInterval(() => {
+    let intervalTimerSplash = setStoppableInterval(() => {
       if (i >= this.IMAGES_BOTTLE_SPLASH.length) {
-        clearInterval(timerSplash);
+        clearInterval(intervalTimerSplash);
         this.markedForRemoval = true; // World filtert später raus
         return;
       }

@@ -2,8 +2,8 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
-let intervalIDs = [];
-let i = 1;
+let intervalIds = [];
+let i = 1; // brauche ich das?
 
 function init() {
   canvas = document.getElementById("canvas");
@@ -94,4 +94,15 @@ function showEndscreen(type) {
 
 function startGame() {
   location.reload();  
+}
+
+function setStoppableInterval(fn, time) {
+  let id = setInterval(fn, time);
+  intervalIds.push(id);
+  return id; // brauche ich das? -> dann kann ich auch mal EIN Intervall stoppen?
+}
+
+function stopGame() {
+  intervalIds.forEach(clearInterval);
+  intervalIds = [];
 }

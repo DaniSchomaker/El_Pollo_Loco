@@ -29,17 +29,19 @@ class World {
 
   // ===== Game Loop / Rendering =====
   run() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       this.checkCollisions();
       this.checkEndbossHitByBottle();
       this.checkEnemyHitByBottle();
       this.checkThrowObjects();
 
       if (this.character.isDead()) {
+        stopGame();
         showEndscreen("lose");
       }
 
       if (this.endboss.isDead()) {
+        stopGame();
         showEndscreen("win");
       }
     }, 50); // An diesem Wert liegt es, wenn es harkt

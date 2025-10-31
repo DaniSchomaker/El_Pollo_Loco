@@ -99,7 +99,7 @@ animate() {
   this.isWalkingSoundPlaying = false; // Sound-Flag
 
   // Bewegung & Kamera (60 FPS)
-  setInterval(() => {
+  setStoppableInterval(() => {
     let didAction = false;
     let moving = false;
 
@@ -146,7 +146,7 @@ animate() {
   }, 1000 / 60);
 
   // Animationen (20 FPS)
-  setInterval(() => {
+  setStoppableInterval(() => {
     if (this.isDead()) return this.playAnimation(this.IMAGES_DEAD);
     if (this.isHurt()) return this.playAnimation(this.IMAGES_HURT);
     if (this.isAboveGround()) return this.playAnimation(this.IMAGES_JUMPING);
@@ -155,7 +155,7 @@ animate() {
   }, 50);
 
   // Idle / Long-Idle (5 FPS)
-  setInterval(() => {
+  setStoppableInterval(() => {
     const k = this.world.keyboard;
     const inactiveSec = (Date.now() - this.lastActionTime) / 1000;
     const isIdle =

@@ -32,12 +32,12 @@ class ChickenSmall extends MovableObject {
   }
 
   animate() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.dead) return;
       this.moveLeft();
     }, 1000 / 60); // Alle 1000/60 Millisekunden wird das zwischen {} ausgeführt
 
-    setInterval(() => {
+    setStoppableInterval(() => {
       // Bilderanmiation
       if (this.dead) {
         this.playAnimation(this.IMAGES_DEAD);
