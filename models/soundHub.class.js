@@ -44,10 +44,7 @@ class SoundHub {
     sound.volume = 0.6;
     sound.currentTime = 0;
     sound.play().catch(() => {
-      // Fallback, falls Autoplay blockiert wird
-      console.warn(
-        "Autoplay blockiert – Musik startet nach Benutzerinteraktion."
-      );
+      // kein console.warn mehr, stillschweigend ignorieren
     });
   }
 
