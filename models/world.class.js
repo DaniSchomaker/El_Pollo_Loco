@@ -10,6 +10,7 @@ class World {
   StatusBarBottle = new StatusBarBottle();
   StatusBarEndboss = new StatusBarEndboss();
   throwableObjects = [];
+  // gameOver = false;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -33,6 +34,14 @@ class World {
       this.checkEndbossHitByBottle();
       this.checkEnemyHitByBottle();
       this.checkThrowObjects();
+
+      if (this.character.isDead()) {
+        showEndscreen("lose");
+      }
+
+      if (this.endboss.isDead()) {
+        showEndscreen("win");
+      }
     }, 50); // An diesem Wert liegt es, wenn es harkt
   }
 
@@ -136,7 +145,7 @@ class World {
       if (this.endboss.isColliding(bottle)) {
         if (!this.endboss.isHurt()) {
           // dein Hurt-Cooldown
-          
+
           SoundHub.playOne(SoundHub.chickenClucks);
           this.endboss.hit();
           this.StatusBarEndboss.setPercentage(this.endboss.health);
@@ -183,7 +192,6 @@ class World {
       if (this.character.isColliding(coin)) {
         this.character.coins++;
         SoundHub.playOne(SoundHub.collectCoin);
-
 
         const percentage = (this.character.coins / this.totalCoins) * 100;
         this.StatusBarCoin.setPercentage(percentage);
@@ -303,4 +311,17 @@ class World {
   removeBottle(index) {
     this.throwableObjects.splice(index, 1);
   }
+
+//   endGame() {
+//   this.gameOver = true;
+
+//   this.level.enemies = [];
+//   this.level.coins = [];
+//   this.level.bottles = [];
+//   this.throwableObjects = [];
+
+//   // Character + Endboss "deaktivieren"
+//   this.character = null;
+//   this.endboss = null;
+// }
 }

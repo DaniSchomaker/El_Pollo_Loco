@@ -48,7 +48,7 @@
     <h1>El Pollo Loco</h1>
 
     <div class="game_wrapper">
-      <section class="soundbar">
+      <div class="soundbar">
         <button id="sound_toggle" onclick="SoundHub.toggleSound()">
           <img
             id="sound_icon"
@@ -56,16 +56,16 @@
             alt="sound on"
           />
         </button>
-      </section>
+      </div>
 
       <canvas id="canvas" width="720" height="480"> </canvas>
 
 
-      <div class="endscreen d_none" id="endscreen_winner">
-        <img src="img/You won, you lost/You won A.png" alt="You won">
-        <!-- <button class="restartButton" onclick="startGame()">
+      <div id="endscreen" class="endscreen d_none" >
+        <img id="endscreen_img" src="" alt="Endscreen You won">
+        <button class="play_again" onclick="startGame()">
           play again
-        </button> -->
+        </button>
       </div>
 
 
