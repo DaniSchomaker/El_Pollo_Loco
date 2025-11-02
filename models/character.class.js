@@ -157,6 +157,7 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_JUMPING);
       } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
         this.playAnimation(this.IMAGES_WALKING);
+      
       } else {
         this.playAnimation(this.IMAGES_IDLE);
       }
@@ -184,7 +185,7 @@ class Character extends MovableObject {
       } else {
         this.playAnimation(this.IMAGES_IDLE);
       }
-    }, 200);
+    }, 300);
   }
 
   canThrow() {
