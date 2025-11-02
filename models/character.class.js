@@ -147,11 +147,19 @@ class Character extends MovableObject {
 
     // Animationen (20 FPS)
     setStoppableInterval(() => {
-      if (this.isDead()) return this.playAnimation(this.IMAGES_DEAD);
-      if (this.isHurt()) return this.playAnimation(this.IMAGES_HURT);
-      if (this.isAboveGround()) return this.playAnimation(this.IMAGES_JUMPING);
-      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)
-        return this.playAnimation(this.IMAGES_WALKING);
+      if (this.isDead()) {
+        this.playAnimation(this.IMAGES_DEAD);
+      } else if (this.isHurt()) {
+        this.playAnimation(this.IMAGES_HURT);
+      } else if (this.isAboveGround()) {
+        if (this.speedY > 0 && this.currentImage > 3) this.currentImage = 3;
+        if (this.speedY < 0 && this.currentImage > 4) this.currentImage = 7;
+        this.playAnimation(this.IMAGES_JUMPING);
+      } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+        this.playAnimation(this.IMAGES_WALKING);
+      } else {
+        this.playAnimation(this.IMAGES_IDLE);
+      }
     }, 50);
 
     // Idle / Long-Idle (5 FPS)
