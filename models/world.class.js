@@ -4,7 +4,7 @@ class World {
   canvas;
   ctx;
   keyboard;
-  camera_x = 0; // Kamera soll später verschoben werden
+  camera_x = 0;
   StatusBarHealth = new StatusBarHealth();
   StatusBarCoin = new StatusBarCoin();
   StatusBarBottle = new StatusBarBottle();
@@ -12,102 +12,112 @@ class World {
   throwableObjects = [];
   gameOver = false;
 
+  // ===== Konstruktor & Setup =====
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.draw();
-    this.setWorld(); // "Hilfe", um die Welt an Objekte zu übergeben (Charakter?)
-    this.run(); // vorher: checkCollisions()
-    this.totalCoins = this.level.coins.length; // Gesamtanzahl an Coins, die im Spiel vorhanden sind
-    this.endboss = this.level.enemies[this.level.enemies.length - 1]; // der letzte Eintrag in meinem Array Enemies ist der Endboss
-  }
-  "";
-  setWorld() {
-    this.character.world = this; // mit "this" wird die aktuelle Instanz der World übergeben???
+    this.setWorld();
+    this.run();
+    this.totalCoins = this.level.coins.length;
+    this.endboss = this.level.enemies[this.level.enemies.length - 1];
   }
 
-  // ===== Game Loop / Rendering =====
+  setWorld() {
+    this.character.world = this;
+  }
+
+  // ===== Game Loop / Update =====
   run() {
     setStoppableInterval(() => {
-      this.checkCollisions();
-      this.checkEndbossHitByBottle();
-      this.checkEnemyHitByBottle();
-      this.checkThrowObjects();
-
-      if (this.character.isDead()) {
-        stopGame();
-        this.resetWorld();
-        showEndscreen("lose");
-      }
-
-      if (this.endboss.isDead() && !this.gameOver) {
-        this.gameOver = true;
-
-        setTimeout(() => {
-          stopGame();
-          this.resetWorld();
-          showEndscreen("win");
-        }, 700);
-      }
-    }, 50); // An diesem Wert liegt es, wenn es harkt
+      this.updateGameState();
+    }, 50);
   }
 
+  updateGameState() {
+    this.handleGameplayChecks();
+    this.handleGameOverConditions();
+  }
+
+  handleGameplayChecks() {
+    this.checkCollisions();
+    this.checkBottleHits();
+    this.checkThrowObjects();
+  }
+
+  handleGameOverConditions() {
+    if (this.character.isDead()) {
+      this.endGame("lose");
+    }
+
+    if (this.endboss.isDead() && !this.gameOver) {
+      this.endGameWithDelay("win", 700);
+    }
+  }
+
+  endGame(result) {
+    stopGame();
+    this.resetWorld();
+    showEndscreen(result);
+  }
+
+  endGameWithDelay(result, delayMs) {
+    this.gameOver = true;
+    setTimeout(() => this.endGame(result), delayMs);
+  }
+
+  // ===== Rendering =====
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // das alte Bild gelöscht
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.ctx.translate(this.camera_x, 0); // verschiebt die Kamera nach links s.u.
+    this.drawWorldWithoutCharacter();
+    this.drawStatusBars();
+    this.drawCharacterOnTop(); // damit der Character VOR der StatusBar ist
+
+    requestAnimationFrame(() => this.draw());
+  }
+
+  drawWorldWithoutCharacter() {
+    this.ctx.translate(this.camera_x, 0);
+
     this.addObjectsToMap(this.level.backgroundObjects);
-    this.addObjectsToMap(this.level.clouds); // ALLE Objekte eines Arrays
+    this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottles);
+    this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.throwableObjects);
 
-    this.ctx.translate(-this.camera_x, 0); // Back
+    this.ctx.translate(-this.camera_x, 0);
+  }
 
-    this.addToMap(this.StatusBarHealth); // durch diese Einrahmung bleibt die Statusbar immer an der gleichen Stelle
+  drawStatusBars() {
+    this.addToMap(this.StatusBarHealth);
     this.addToMap(this.StatusBarCoin);
     this.addToMap(this.StatusBarBottle);
     this.addToMap(this.StatusBarEndboss);
+  }
 
-    this.ctx.translate(this.camera_x, 0); // Forwards
-
-    // nur zeichnen, wenn vorhanden
-    if (this.level.coins) this.addObjectsToMap(this.level.coins);
-    if (this.level.bottles) this.addObjectsToMap(this.level.bottles);
-    if (this.character) this.addToMap(this.character);
-    if (this.level.enemies) this.addObjectsToMap(this.level.enemies);
-    if (this.throwableObjects) this.addObjectsToMap(this.throwableObjects); // warum ohne Level?
-
-    this.ctx.translate(-this.camera_x, 0); // zurück verschieben ??? s.o.
-
-    // Die draw-Methode wird immer wieder aufgerufen (zB 60fps) --> so akzeotieren
-    let self = this;
-    requestAnimationFrame(function () {
-      self.draw();
-    });
+  drawCharacterOnTop() {
+    this.ctx.translate(this.camera_x, 0);
+    this.addToMap(this.character);
+    this.ctx.translate(-this.camera_x, 0);
   }
 
   addToMap(mo) {
-    // "mo" für movableObject
-
-    if (mo.otherDirection) {
-      // Bild wird gespiegelt
-      this.flipImage(mo);
-    }
+    if (mo.otherDirection) this.flipImage(mo);
 
     mo.draw(this.ctx);
+    mo.drawFrame(this.ctx); // Kollisionsrahmen (ggf. später per Flag steuerbar)
 
-    mo.drawFrame(this.ctx); // Zeichnung von "Boxen" für die Collision
-
-    if (mo.otherDirection) {
-      // Falls der Context oben geändert wurde --> RÜCKGÄNGIG machen
-      this.flipImageBack(mo);
-    }
+    if (mo.otherDirection) this.flipImageBack(mo);
   }
 
   flipImage(mo) {
-    this.ctx.save(); // Aktueller Stand vom Context (ctx) wird gespeichert
-    this.ctx.translate(mo.width, 0); // Da gespiegelt wird, muss das Objekt verschoben werden (um die Breite des Elements)
-    this.ctx.scale(-1, 1); // Alles wird gespiegelt
-    mo.x = mo.x * -1; // X-Koordinate wird gespiegelt
+    this.ctx.save();
+    this.ctx.translate(mo.width, 0);
+    this.ctx.scale(-1, 1);
+    mo.x = mo.x * -1;
   }
 
   flipImageBack(mo) {
@@ -116,12 +126,10 @@ class World {
   }
 
   addObjectsToMap(objects) {
-    objects.forEach((o) => {
-      this.addToMap(o);
-    });
+    objects.forEach((o) => this.addToMap(o));
   }
 
-  // ===== Gameplay =====
+  // ===== Gameplay: Kollisionen & Aufsammeln =====
   checkCollisions() {
     this.checkEnemyCollision();
     this.checkCoinCollision();
@@ -130,14 +138,12 @@ class World {
 
   checkEnemyCollision() {
     this.level.enemies.forEach((enemy) => {
-      if (!this.character.isColliding(enemy)) return;
       if (enemy.dead) return;
+      if (!this.character.isColliding(enemy)) return;
 
-      if (this.isStomp(enemy)) {
-        enemy.health = 0;
+      if (this.isStomp()) {
         SoundHub.playOne(SoundHub.chickenStomp);
-        enemy.die(); // Chicken --> Animation, entfernen
-
+        enemy.die();
         return;
       }
 
@@ -147,202 +153,180 @@ class World {
     this.removeDeadEnemies();
   }
 
-  checkEndbossHitByBottle() {
-    for (let i = 0; i < this.throwableObjects.length; i++) {
-      const bottle = this.throwableObjects[i];
-
-      if (bottle.hasHit) continue; // mehrfaches Triggern wird verhindert (sonst wird Splash-Sound mehrfach abgespielt)
-
-      if (this.endboss.isColliding(bottle)) {
-        if (!this.endboss.isHurt()) {
-          // dein Hurt-Cooldown
-
-          SoundHub.playOne(SoundHub.chickenClucks);
-          this.endboss.hit();
-          this.StatusBarEndboss.setPercentage(this.endboss.health);
-        }
-        bottle.startSplash(); // Splash anzeigen
-      }
-    }
-
-    // Aufräumen: Splash-Fertig → entfernen
-    this.throwableObjects = this.throwableObjects.filter(
-      (bottle) => !bottle.markedForRemoval
-    );
-  }
-
-  checkEnemyHitByBottle() {
-    for (let i = 0; i < this.throwableObjects.length; i++) {
-      const bottle = this.throwableObjects[i];
-      let bottleUsed = false;
-
-      this.level.enemies.forEach((enemy) => {
-        if (bottleUsed) return; // Flasche nur 1x wirksam
-        if (enemy.dead) return; // tote Gegner ignorieren
-        if (bottle.hasHit) return; // bereits im Splash
-        if (!enemy.isColliding(bottle)) return;
-
-        this.applyBottleHit(enemy);
-        bottle.startSplash();
-        bottleUsed = true;
-        SoundHub.playOne(SoundHub.chickenStomp);
-      });
-
-      if (bottleUsed) {
-        this.removeBottle(i);
-        i--; // verhindert Überspringen des nächsten Elements
-      }
-    }
-
-    this.removeDeadEnemies(); // identisch zu Enemy-Collision
-  }
-
   checkCoinCollision() {
-    this.level.coins.forEach((coin, index) => {
-      // INDEX, damit der richtige Coin gelöscht wird
-      if (this.character.isColliding(coin)) {
+    let collected = false;
+
+    this.level.coins = this.level.coins.filter((coin) => {
+      if (!collected && this.character.isColliding(coin)) {
         this.character.coins++;
         SoundHub.playOne(SoundHub.collectCoin);
-
-        const percentage = (this.character.coins / this.totalCoins) * 100;
-        this.StatusBarCoin.setPercentage(percentage);
-
-        this.level.coins.splice(index, 1); // Coin verschwindet
+        this.updateCoinBar();
+        collected = true; // pro Tick reicht ein Coin
+        return false; // Coin entfernen
       }
+      return true; // Coin behalten
     });
   }
 
   checkBottleCollision() {
-    this.level.bottles.forEach((bottle, index) => {
-      if (this.character.isColliding(bottle)) {
-        // Inventar voll? --> Keine Bottle einsammeln
-        if (this.character.bottles >= this.character.MAX_BOTTLES) {
-          return;
-        }
+    let capacity = this.character.MAX_BOTTLES - this.character.bottles;
 
-        // Bottle einsammeln
+    this.level.bottles = this.level.bottles.filter((bottle) => {
+      if (capacity > 0 && this.character.isColliding(bottle)) {
         this.character.bottles++;
+        capacity--;
         SoundHub.playOne(SoundHub.collectBottle);
-
-        // StatusBarBottle updaten (5 Bottles = 100%)
-        const percentage =
-          (this.character.bottles / this.character.MAX_BOTTLES) * 100;
-        this.StatusBarBottle.setPercentage(percentage);
-
-        // Bottle entfernen
-        this.level.bottles.splice(index, 1);
+        this.updateBottleBar();
+        return false; // Bottle entfernen
       }
+      return true; // Bottle behalten
     });
   }
 
-  checkThrowObjects() {
-    if (this.keyboard.D) {
-      // Prüfen, ob Wurf möglich ist (cooldown)
-      if (!this.character.canThrow()) {
-        return;
-      }
-
-      if (this.character.bottles > 0) {
-        let bottleX;
-        let bottleY = this.character.y + 100;
-
-        // Startpunkt abhängig von Blickrichtung
-        if (this.character.otherDirection) {
-          // Character schaut nach LINKS → Bottle links spawnen
-          bottleX = this.character.x - 20;
-        } else {
-          // Character schaut nach RECHTS → Bottle rechts spawnen
-          bottleX = this.character.x + 50;
-        }
-
-        // Flasche erzeugen
-        let bottle = new ThrowableObject(bottleX, bottleY);
-        bottle.world = this; // <— wichtig: damit die Flasche auf level.groundLevel zugreifen kann ///////////////
-        this.throwableObjects.push(bottle); ///////////////////////
-
-        // Richtung der Flasche setzen
-        if (this.character.otherDirection) {
-          bottle.speedX = -10;
-          bottle.otherDirection = true;
-        } else {
-          bottle.speedX = 10;
-          bottle.otherDirection = false;
-        }
-
-        this.throwableObjects.push(bottle);
-
-        // Bottle-Anzahl reduzieren
-        this.character.bottles--;
-
-        // Cooldown starten
-        this.character.lastThrow = Date.now();
-
-        // StatusBar aktualisieren
-        const percentage =
-          (this.character.bottles / this.character.MAX_BOTTLES) * 100;
-        this.StatusBarBottle.setPercentage(percentage);
-      }
-    }
+  updateCoinBar() {
+    const percentage = (this.character.coins / this.totalCoins) * 100;
+    this.StatusBarCoin.setPercentage(percentage);
   }
 
-  // ===== Helpers =====
-  // Prüft, ob ein Stomp vorliegt
-  isStomp(enemy) {
-    // brauche ich hier den Übergabeparameter?
+  updateBottleBar() {
+    const percentage =
+      (this.character.bottles / this.character.MAX_BOTTLES) * 100;
+    this.StatusBarBottle.setPercentage(percentage);
+  }
+
+  isStomp() {
     const inAir = this.character.isAboveGround();
     const falling = this.character.speedY < 0;
-
     return inAir && falling;
   }
 
-  // Wendet Schaden auf Spieler an
+  // ===== Bottle-Hits: Boss/Gegner =====
+  checkBottleHits() {
+    for (const bottle of this.throwableObjects) {
+      if (bottle.hasHit) continue;
+
+      // 1) Endboss-Treffer prüfen
+      if (this.handleBottleHitEndboss(bottle)) {
+        bottle.startSplash(); // setzt markedForRemoval = true
+        continue;
+      }
+
+      // 2) Gegner-Treffer prüfen (ein Gegner pro Flasche)
+      if (this.handleBottleHitEnemy(bottle)) {
+        bottle.startSplash();
+        continue;
+      }
+    }
+
+    // Aufräumen (Splash fertig --> raus)
+    this.throwableObjects = this.throwableObjects.filter(
+      (b) => !b.markedForRemoval
+    );
+    this.removeDeadEnemies();
+  }
+
+  handleBottleHitEndboss(bottle) {
+    if (!this.endboss.isColliding(bottle)) return false;
+
+    if (!this.endboss.isHurt()) {
+      SoundHub.playOne(SoundHub.chickenClucks);
+      this.endboss.hit();
+      this.StatusBarEndboss.setPercentage(this.endboss.health);
+    }
+    return true;
+  }
+
+  handleBottleHitEnemy(bottle) {
+    for (const enemy of this.level.enemies) {
+      if (enemy.dead) continue;
+      if (!enemy.isColliding(bottle)) continue;
+
+      this.applyBottleHit(enemy); 
+      SoundHub.playOne(SoundHub.chickenStomp);
+      return true; // genau ein Gegner pro Flasche
+    }
+    return false;
+  }
+
+  // ===== Werfen: Orchestrator + Helfer =====
+  checkThrowObjects() {
+    const keys = this.keyboard;
+    if (!keys.D) return; // keine Wurf-Taste
+    if (!this.character.canThrow()) return; // Cooldown
+    if (this.character.bottles <= 0) return; // kein Inventar
+
+    const { x, y } = this.getBottleSpawnPosition();
+    const bottle = this.spawnBottle(x, y);
+    this.setBottleDirection(bottle);
+
+    this.consumeBottleAndStartCooldown();
+    this.updateBottleBar();
+
+    this.character.wakeFromAction();
+  }
+
+  /* ===== Helfer ===== */
+
+  getBottleSpawnPosition() {
+    const spawnOffsetX = this.character.otherDirection ? -20 : 50;
+    return {
+      x: this.character.x + spawnOffsetX,
+      y: this.character.y + 100,
+    };
+  }
+
+  spawnBottle(x, y) {
+    const bottle = new ThrowableObject(x, y);
+    bottle.world = this;
+    this.throwableObjects.push(bottle);
+    return bottle;
+  }
+
+  setBottleDirection(bottle) {
+    if (this.character.otherDirection) {
+      bottle.speedX = -10;
+      bottle.otherDirection = true;
+    } else {
+      bottle.speedX = 10;
+      bottle.otherDirection = false;
+    }
+  }
+
+  consumeBottleAndStartCooldown() {
+    this.character.bottles--;
+    this.character.lastThrow = Date.now();
+  }
+
+  // ===== Weitere Helfer & Reset =====
   applyCharacterDamage() {
-    if (this.character.isHurt()) return; // i-frames: schon kürzlich getroffen → nix tun
+    if (this.character.isHurt()) return;
 
     SoundHub.playOne(SoundHub.hurt);
     this.character.hit();
     this.StatusBarHealth.setPercentage(this.character.health);
   }
 
-  // Entfernt erledigte Gegner
   removeDeadEnemies() {
     this.level.enemies = this.level.enemies.filter((e) => !e.markedForRemoval);
   }
 
-  // wendet den Flaschen-Treffer auf einen Gegner an (Schaden + ggf. töten)
   applyBottleHit(enemy) {
-    enemy.hit(); // Gegner verliert Health
-
+    enemy.hit();
     if (enemy.isDead()) {
-      enemy.die(); // Gegner führt eigene Sterbe-Animation aus und markiert sich zum Entfernen
+      enemy.die(); 
     }
   }
 
-  // entfernt eine bereits "verbrauchte" Flasche aus dem Array
   removeBottle(index) {
     this.throwableObjects.splice(index, 1);
   }
 
-  //   endGame() {
-  //   this.gameOver = true;
-
-  //   this.level.enemies = [];
-  //   this.level.coins = [];
-  //   this.level.bottles = [];
-  //   this.throwableObjects = [];
-
-  //   // Character + Endboss "deaktivieren"
-  //   this.character = null;
-  //   this.endboss = null;
-  // }
-
   resetWorld() {
-    // alles aus der Szene entfernen
     this.level.enemies = [];
     this.level.coins = [];
     this.level.bottles = [];
     this.throwableObjects = [];
     this.character = null;
-    // this.endboss = null;
   }
 }
+
