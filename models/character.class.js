@@ -8,14 +8,18 @@ class Character extends MovableObject {
   lastThrow = 0; // Zeitpunkt des letzten Wurfs in ms
   MAX_BOTTLES = 5;
 
-  
+  // Zustandsflags
   isSleeping = false;
   isWalkingSoundPlaying = false;
 
-  // Konstanten (5)
+  // Konfiguration
   SLEEP_AFTER_SECONDS = 15;
   THROW_COOLDOWN_S = 0.3;
   CAMERA_OFFSET_X = 100;
+
+  // (1) Benannte Jump-Frames statt Magic Numbers
+  JUMP_ASCEND_FRAME = 3;
+  JUMP_DESCEND_FRAME = 7;
 
   // ——— Sprites ———
   IMAGES_WALKING = [
@@ -26,7 +30,6 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-25.png",
     "img/2_character_pepe/2_walk/W-26.png",
   ];
-
   IMAGES_JUMPING = [
     "img/2_character_pepe/3_jump/J-31.png",
     "img/2_character_pepe/3_jump/J-32.png",
@@ -38,7 +41,6 @@ class Character extends MovableObject {
     "img/2_character_pepe/3_jump/J-38.png",
     "img/2_character_pepe/3_jump/J-39.png",
   ];
-
   IMAGES_DEAD = [
     "img/2_character_pepe/5_dead/D-51.png",
     "img/2_character_pepe/5_dead/D-52.png",
@@ -48,13 +50,11 @@ class Character extends MovableObject {
     "img/2_character_pepe/5_dead/D-56.png",
     "img/2_character_pepe/5_dead/D-57.png",
   ];
-
   IMAGES_HURT = [
     "img/2_character_pepe/4_hurt/H-41.png",
     "img/2_character_pepe/4_hurt/H-42.png",
     "img/2_character_pepe/4_hurt/H-43.png",
   ];
-
   IMAGES_IDLE = [
     "img/2_character_pepe/1_idle/idle/I-1.png",
     "img/2_character_pepe/1_idle/idle/I-2.png",
@@ -67,7 +67,6 @@ class Character extends MovableObject {
     "img/2_character_pepe/1_idle/idle/I-9.png",
     "img/2_character_pepe/1_idle/idle/I-10.png",
   ];
-
   IMAGES_SLEEP = [
     "img/2_character_pepe/1_idle/long_idle/I-11.png",
     "img/2_character_pepe/1_idle/long_idle/I-12.png",
@@ -108,9 +107,13 @@ class Character extends MovableObject {
 
   // ——— Bewegung/Input ———
   handleMovement() {
+    const keys = this.world.keyboard;
+    let inputThrow = keys.D;
+    if (inputThrow) this.resetSleep(); // (2) lokal bleibt bestehen; an Quelle s.u.
+
     let moved = this.handleHorizontalMovement();
     let jumped = this.handleJumpInput();
-    let didAction = moved || jumped;
+    let didAction = moved || jumped || inputThrow;
 
     this.updateWalkingSound(moved);
     this.updateActionTime(didAction);
@@ -188,11 +191,11 @@ class Character extends MovableObject {
   }
 
   applyJumpFrameCorrections() {
-    if (this.speedY > 0 && this.currentImage > 3) {
-      this.currentImage = 3;
+    if (this.speedY > 0 && this.currentImage > this.JUMP_ASCEND_FRAME) {
+      this.currentImage = this.JUMP_ASCEND_FRAME;
     }
     if (this.speedY < 0 && this.currentImage > 4) {
-      this.currentImage = 7;
+      this.currentImage = this.JUMP_DESCEND_FRAME;
     }
   }
 
@@ -222,7 +225,8 @@ class Character extends MovableObject {
       !this.isAboveGround() &&
       !keys.RIGHT &&
       !keys.LEFT &&
-      !keys.SPACE
+      !keys.SPACE &&
+      !keys.D
     );
   }
 
@@ -231,17 +235,14 @@ class Character extends MovableObject {
   }
 
   playIdle() {
-    if (this.isSleeping) {
-      this.resetSleep();
-    }
+    if (this.isSleeping) this.resetSleep();
     this.playAnimation(this.IMAGES_IDLE);
   }
 
   playSleep() {
     if (!this.isSleeping) {
       this.isSleeping = true;
-
-      if (!SoundHub.isMuted && SoundHub.snoring && SoundHub.playOne) {
+      if (SoundHub.snoring) {
         SoundHub.snoring.loop = true;
         SoundHub.playOne(SoundHub.snoring);
       }
@@ -252,8 +253,7 @@ class Character extends MovableObject {
   resetSleep() {
     if (this.isSleeping) {
       this.isSleeping = false;
-
-      if (SoundHub.snoring && SoundHub.pauseOne) {
+      if (SoundHub.snoring) {
         SoundHub.pauseOne(SoundHub.snoring);
         SoundHub.snoring.currentTime = 0;
       }
@@ -263,23 +263,24 @@ class Character extends MovableObject {
   // ——— Sonstige Helfer ———
   handleJump() {
     this.jump();
-    SoundHub.playOne?.(SoundHub.jump);
+    SoundHub.playOne(SoundHub.jump);
 
+    // (3) Walking-Sound über Hub kapseln
     if (this.isWalkingSoundPlaying) {
-      SoundHub.pauseOne?.(SoundHub.walking);
+      SoundHub.stopWalking();
       this.isWalkingSoundPlaying = false;
     }
   }
 
   updateWalkingSound(moving) {
     if (moving && !this.isWalkingSoundPlaying) {
-      SoundHub.playOne?.(SoundHub.walking);
+      SoundHub.startWalking(); // (3)
       this.isWalkingSoundPlaying = true;
       return;
     }
 
     if (!moving && this.isWalkingSoundPlaying) {
-      SoundHub.pauseOne?.(SoundHub.walking);
+      SoundHub.stopWalking(); // (3)
       this.isWalkingSoundPlaying = false;
     }
   }
@@ -289,13 +290,17 @@ class Character extends MovableObject {
   }
 
   updateCameraPosition() {
-    // (5) Konstante nutzen
     this.world.camera_x = -this.x + this.CAMERA_OFFSET_X;
   }
 
   canThrow() {
-    // (5) Konstante nutzen
     let timePassed = (Date.now() - this.lastThrow) / 1000;
     return timePassed > this.THROW_COOLDOWN_S;
+  }
+
+  // (2) Quelle-API: kann von World bei Wurf/anderen Aktionen aufgerufen werden
+  wakeFromAction() {
+    this.resetSleep();
+    this.lastActionTime = Date.now();
   }
 }
