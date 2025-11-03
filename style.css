@@ -30,10 +30,6 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
 .game_wrapper {
   position: relative; /* Bezugspunkt für .soundbar */
   display: inline-block; /* Canvas-Größe bestimmt Container */
