@@ -58,29 +58,12 @@ class SoundHub {
     // instrumentImages.forEach(img => img.classList.remove('active')); // nur wichtig für die Visualisierung
   }
 
-  // Pausiert das Abspielen einer einzelnen Audiodatei
+  // Pausiert das Abspielen einer einzelnen Audiodatei --> brauche ich das?
   static pauseOne(sound, instrumentId) {
     sound.pause(); // Pausiert das übergebene Audio
     // const instrumentImg = document.getElementById(instrumentId); // nur wichtig für die Visualisierung
     // instrumentImg.classList.remove('active'); // nur wichtig für die Visualisierung
   }
-
-  // static toggleSound() {
-  //   const icon = document.getElementById("sound_icon");
-
-  //   SoundHub.isMuted = !SoundHub.isMuted;
-
-  //   if (SoundHub.isMuted) {
-  //     SoundHub.pauseAll();
-  //     icon.src = "./img/soundbar/sound_off.png";
-  //   } else {
-  //     SoundHub.playLoop(SoundHub.mainTheme);
-  //     icon.src = "./img/soundbar/sound_on.png";
-  //   }
-
-  //   // Zustand speichern
-  //   SoundHub.saveToLocalStorage();
-  // }
 
   static toggleSound() {
     const button = document.getElementById("sound_toggle");
@@ -118,4 +101,25 @@ class SoundHub {
       }
     }
   }
+
+static startWalking() {
+  if (SoundHub.isMuted) return;
+
+  const walkingSound = SoundHub.walking;
+  walkingSound.loop = true;
+  walkingSound.volume = 0.5;
+
+  if (walkingSound.paused) {
+    walkingSound.currentTime = 0;
+    walkingSound.play().catch(() => {});
+  }
+}
+
+static stopWalking() {
+  const walkingSound = SoundHub.walking;
+  walkingSound.pause();
+  walkingSound.currentTime = 0;
+}
+
+
 }
