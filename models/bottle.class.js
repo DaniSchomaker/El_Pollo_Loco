@@ -8,7 +8,7 @@ class Bottle extends CollectableObject {
   ];
 
   offset = {
-    // für die Collidion: innerer roter Kasten
+    // für die Collision: innerer roter Kasten
     top: 14,
     bottom: 10,
     left: 22,
@@ -23,7 +23,7 @@ class Bottle extends CollectableObject {
     const randomIndex = Math.floor(Math.random() * this.IMAGES.length);
     this.img = this.imageCache[this.IMAGES[randomIndex]];
 
-    this.x = 400 + Math.floor(Math.random() * 10 * 180);
-    this.y = 335 + Math.floor(Math.random() * 20);
+    this.setRandomPosition(400, 10 * 180, 335, 20);
   }
 }
+
