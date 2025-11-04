@@ -1,5 +1,5 @@
-class ChickenSmall extends MovableObject {
-  y = 378; 
+class ChickenSmall extends BasicEnemy {
+  y = 378;
   height = 45;
   width = 45;
   health = 20;
@@ -12,49 +12,16 @@ class ChickenSmall extends MovableObject {
 
   IMAGES_DEAD = ["img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
-  offset = {
-    top: 5, 
-    bottom: 10,
-    left: 10,
-    right: 10
-  };
+  offset = { top: 5, bottom: 10, left: 10, right: 10 };
 
   constructor() {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
 
-    // this.x = 200 + Math.random() * 500; // Startpunkt: 200px + zufälliger Wert zwischen 0 und 500
     this.x = 200 + Math.random() * 2000;
     this.speed = 0.3 + Math.random() * 0.5;
 
-    this.animate();
-  }
-
-  animate() {
-    setStoppableInterval(() => {
-      if (this.dead) return;
-      this.moveLeft();
-    }, 1000 / 60); // Alle 1000/60 Millisekunden wird das zwischen {} ausgeführt
-
-    setStoppableInterval(() => {
-      // Bilderanmiation
-      if (this.dead) {
-        this.playAnimation(this.IMAGES_DEAD);
-        return;
-      }
-      this.playAnimation(this.IMAGES_WALKING);
-    }, 200);
-  }
-
-  die() { // DOPPELT!
-    if (this.dead) return; 
-    this.dead = true; 
-    this.speed = 0;
-
-    // nach kurzer Zeit entfernen (World räumt in removeDeadEnemies() auf)
-    setTimeout(() => {
-      this.markedForRemoval = true;
-    }, 800);
+    this.animate(); // kommt jetzt aus BasicEnemy
   }
 }
