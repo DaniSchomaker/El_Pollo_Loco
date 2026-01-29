@@ -13,12 +13,20 @@ body {
 
 canvas {
   background-color: black;
+  display: block;
 }
 
 h1 {
   font-family: "Rye", serif;
   font-size: 40px;
   margin-bottom: 8px;
+}
+
+h2 {
+  /* font-family: "Rye", serif; */
+  font-size: 28px;
+  margin: 0;
+  /* margin-bottom: 8px; */
 }
 
 p {
@@ -33,6 +41,117 @@ a {
 .game_wrapper {
   position: relative; /* Bezugspunkt für .soundbar */
   display: inline-block; /* Canvas-Größe bestimmt Container */
+}
+
+/* ----------------------------- */
+/* Start Screen */
+/* ----------------------------- */
+
+.start_screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 720px;
+  height: 480px;
+  z-index: 10;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: black;
+}
+
+.start_screen_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.start_screen_actions {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.start_screen_actions .button {
+  position: static;
+  width: 180px;
+}
+
+/* ----------------------------- */
+/* Controls Overlay */
+/* ----------------------------- */
+
+.controls_overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.controls_card {
+  position: relative;
+  width: 280px;
+  max-width: calc(100% - 48px);
+  background: rgba(0, 0, 0, 0.55);
+  border: 2px solid white;
+  border-radius: 12px;
+  padding: 20px 20px 16px 0px;
+  text-align: center;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.controls_close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 2px solid white;
+  background: rgba(255, 140, 33, 1);
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.controls_close:hover {
+  transform: scale(1.04);
+}
+
+.controls_close:active {
+  transform: scale(0.98);
+}
+
+.controls_list {
+  list-style: none;
+  /* margin: 16px 0 0 60px; */
+  margin: 16px 0 0 0;
+  padding: 0;
+  text-align: left;
+  font-size: 18px;
+  /* border: 2px red solid; */
+}
+
+.controls_list li {
+  padding: 8px 0;
 }
 
 .soundbar {
@@ -71,7 +190,6 @@ a {
 .soundbar img:active {
   transform: scale(0.98);
 }
-
 .endscreen {
   position: absolute;
   inset: 0; /* top:0; right:0; bottom:0; left:0 */
@@ -92,16 +210,17 @@ a {
   object-fit: cover;
 }
 
+/* Basis-Button-Style (absolut für z.B. Start-Button) */
 .button {
   position: absolute;
-  width: 180px;
+  width: 160px;
   box-sizing: border-box;
-  background-color: rgb(255,140,33);
+  background-color: rgb(255, 140, 33);
   color: black;
   border: 2px solid white;
   border-radius: 8px;
   font-family: "Fredoka", sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
   padding: 12px 24px;
@@ -109,19 +228,28 @@ a {
   display: inline-block;
 }
 
-.startGame {
-  
+/* Start-Button oben*/
+.start_game {
   top: 16px;
 }
 
-.button_impressum {
+/* Impressum/Credits-Button unten */
+.endscreen_links {
+  position: absolute;
   bottom: 16px;
-  left: 160px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 40px; /* Abstand zwischen den Buttons */
+  flex-wrap: wrap; /* Bei wenig Platz umbrechen */
+  padding: 0 16px;
 }
 
-.button_credits {
-  bottom: 16px;
-  right: 160px;
+/* Im Link-Container: Buttons NICHT absolut positionieren */
+.endscreen_links .button {
+  position: static;
+  width: 160px;
 }
 
 .d_none {
@@ -137,3 +265,16 @@ a {
   color: black;
 }
 
+/* ////// Tablet/Smartphone ////// */
+
+@media only screen and (max-width: 720px) {
+  canvas {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-height: 480px) {
+  canvas {
+    height: 100vh;
+  }
+}

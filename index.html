@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>El Pollo Loco</title>
-    
+
     <link rel="icon" type="image/x-icon" href="./img/Favicon.png" />
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./styles/fonts.css" />
@@ -38,12 +38,11 @@
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
     <script src="./models/world.class.js"></script>
-    
   </head>
 
   <!-- TO DO: Breiter Screen -->
 
-  <body onload="SoundHub.getFromLocalStorage(); init();">
+  <body onload="SoundHub.getFromLocalStorage()">
     <h1>El Pollo Loco</h1>
 
     <div class="game_wrapper">
@@ -57,15 +56,63 @@
         </button>
       </div>
 
+      <div id="start_screen" class="start_screen">
+        <img
+          class="start_screen_img"
+          src="./img/9_intro_outro_screens/start/startscreen_3.png"
+          alt="Startscreen"
+        />
+
+        <button class="button start_game" onclick="startGame()">
+          Start Game
+        </button>
+
+        <div class="endscreen_links startscreen_links">
+          <!-- endscreen-links-Klasse? -->
+          <a href="./impressum.html" class="button" target="_blank"
+            >Impressum</a
+          >
+          <button class="button" onclick="openControls()">Controls</button>
+        </div>
+      </div>
+
+      <div
+        id="controls_overlay"
+        class="controls_overlay d_none"
+        onclick="closeControls()"
+      >
+        <div class="controls_card" onclick="stopClick(event)">
+          <h2>Controls</h2>
+          <button
+            class="controls_close"
+            onclick="closeControls()"
+            aria-label="close"
+          >
+            ✕
+          </button>
+
+          <ul class="controls_list">
+            <li><b>Move: </b>← / →</li>
+            <li><b>Jump: </b>Space</li>
+            <li><b>Throw: </b>D</li>
+          </ul>
+        </div>
+      </div>
+
       <canvas id="canvas" width="720" height="480"> </canvas>
 
       <div id="endscreen" class="endscreen d_none">
         <img id="endscreen_img" src="" alt="Endscreen You won" />
-        <button class="button startGame" onclick="startGame()">play again</button>
+        <button class="button startGame" onclick="restartGame()">
+          play again
+        </button>
 
-        <a href="./impressum.html" class="button button_impressum" target="_blank">Impressum</a>
-        <a href="./credits.html" class="button button_credits" target="_blank">Credits</a>
-
+        <div class="endscreen_links">
+          <a href="./impressum.html" class="button" target="_blank"
+            >Impressum</a
+          >
+          <a href="./credits.html" class="button" target="_blank">Credits</a>
+        </div>
       </div>
     </div>
   </body>
