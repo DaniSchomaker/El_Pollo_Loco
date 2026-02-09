@@ -19,10 +19,10 @@ class Chicken extends BasicEnemy {
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
 
-    this.x = 200 + Math.random() * 2000;
+    this.x = 300 + Math.random() * 2000;
     this.speed = 0.1 + Math.random() * 0.5;
 
-    this.animate(); // kommt jetzt aus BasicEnemy
+    this.animate();
   }
 }
 
