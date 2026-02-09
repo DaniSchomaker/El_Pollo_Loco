@@ -40,8 +40,6 @@
     <script src="./models/world.class.js"></script>
   </head>
 
-  <!-- TO DO: Breiter Screen -->
-
   <body onload="SoundHub.getFromLocalStorage()">
     <h1>El Pollo Loco</h1>
 
@@ -103,8 +101,11 @@
 
       <div id="endscreen" class="endscreen d_none">
         <img id="endscreen_img" src="" alt="Endscreen You won" />
-        <button class="button startGame" onclick="restartGame()">
-          play again
+        <button
+          class="button start_game endscreen_restart"
+          onclick="restartGame()"
+        >
+          Play again
         </button>
 
         <div class="endscreen_links">
