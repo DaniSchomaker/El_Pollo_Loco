@@ -125,8 +125,17 @@ function showEndscreen(type) {
 }
 
 function restartGame() {
-  location.reload();
+  const endscreen = document.getElementById('endscreen');
+  endscreen.classList.add('d_none');
+
+  stopGame();
+  world.stop();
+
+  initLevel();
+  gameStarted = false;
+  startGame();
 }
+
 
 function setStoppableInterval(fn, time) {
   let id = setInterval(fn, time);

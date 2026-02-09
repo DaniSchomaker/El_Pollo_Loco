@@ -11,17 +11,19 @@ class World {
   StatusBarEndboss = new StatusBarEndboss();
   throwableObjects = [];
   gameOver = false;
+  is_running = true;
+  animation_frame_id = null;
 
   // ===== Konstruktor & Setup =====
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
-    this.draw();
     this.setWorld();
     this.run();
     this.totalCoins = this.level.coins.length;
     this.endboss = this.level.enemies[this.level.enemies.length - 1];
+    this.draw();
   }
 
   setWorld() {
@@ -58,7 +60,7 @@ class World {
 
   endGame(result) {
     stopGame();
-    this.resetWorld();
+    this.stop();
     showEndscreen(result);
   }
 
@@ -75,7 +77,10 @@ class World {
     this.drawStatusBars();
     this.drawCharacterOnTop(); // damit der Character VOR der StatusBar ist
 
-    requestAnimationFrame(() => this.draw());
+    if (!this.is_running) {
+      return;
+    }
+    this.animation_frame_id = requestAnimationFrame(() => this.draw());
   }
 
   drawWorldWithoutCharacter() {
@@ -222,7 +227,7 @@ class World {
 
     // Aufräumen (Splash fertig --> raus)
     this.throwableObjects = this.throwableObjects.filter(
-      (b) => !b.markedForRemoval
+      (b) => !b.markedForRemoval,
     );
     this.removeDeadEnemies();
   }
@@ -243,7 +248,7 @@ class World {
       if (enemy.dead) continue;
       if (!enemy.isColliding(bottle)) continue;
 
-      this.applyBottleHit(enemy); 
+      this.applyBottleHit(enemy);
       SoundHub.playOne(SoundHub.chickenStomp);
       return true; // genau ein Gegner pro Flasche
     }
@@ -315,7 +320,7 @@ class World {
   applyBottleHit(enemy) {
     enemy.hit();
     if (enemy.isDead()) {
-      enemy.die(); 
+      enemy.die();
     }
   }
 
@@ -330,5 +335,13 @@ class World {
     this.throwableObjects = [];
     this.character = null;
   }
-}
 
+  stop() {
+    this.is_running = false;
+
+    if (this.animation_frame_id) {
+      cancelAnimationFrame(this.animation_frame_id);
+      this.animation_frame_id = null;
+    }
+  }
+}
