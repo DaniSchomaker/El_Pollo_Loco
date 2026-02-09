@@ -73,11 +73,11 @@ class SoundHub {
     if (isMuted) {
       SoundHub.isMuted = true;
       SoundHub.pauseAll();
-      icon.src = "./img/soundbar/sound_off.png";
+      icon.src = "./img/icons/sound_off.png";
     } else {
       SoundHub.isMuted = false;
       SoundHub.playLoop(SoundHub.mainTheme);
-      icon.src = "./img/soundbar/sound_on.png";
+      icon.src = "./img/icons/sound_on.png";
     }
     SoundHub.saveToLocalStorage();
   }
@@ -93,11 +93,11 @@ class SoundHub {
       if (SoundHub.isMuted) {
         SoundHub.pauseAll();
         document.getElementById("sound_icon").src =
-          "./img/soundbar/sound_off.png";
+          "./img/icons/sound_off.png";
       } else {
         SoundHub.playLoop(SoundHub.mainTheme);
         document.getElementById("sound_icon").src =
-          "./img/soundbar/sound_on.png";
+          "./img/icons/sound_on.png";
       }
     }
   }
