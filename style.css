@@ -19,7 +19,9 @@ canvas {
 h1 {
   font-family: "Rye", serif;
   font-size: 40px;
+  margin-top: 16px;
   margin-bottom: 8px;
+  text-align: center;
 }
 
 h2 {
@@ -226,6 +228,21 @@ a {
   padding: 12px 24px;
   text-decoration: none;
   display: inline-block;
+  white-space: nowrap;
+}
+
+.back_button {
+  position: relative;
+  margin-top: 16px;
+  width: 240px;
+  text-align: center;
+  /* top: 16px;
+  left: 16px;
+  z-index: 10;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center; */
 }
 
 /* Start-Button oben*/
