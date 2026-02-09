@@ -4,6 +4,13 @@ class Endboss extends MovableObject {
   y = 60;
 
   IMAGES_WALKING = [
+    "img/4_enemie_boss_chicken/1_walk/G1.png",
+    "img/4_enemie_boss_chicken/1_walk/G2.png",
+    "img/4_enemie_boss_chicken/1_walk/G3.png",
+    "img/4_enemie_boss_chicken/1_walk/G4.png",
+  ];
+
+  IMAGES_ALERT = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
     "img/4_enemie_boss_chicken/2_alert/G6.png",
     "img/4_enemie_boss_chicken/2_alert/G7.png",
@@ -11,59 +18,126 @@ class Endboss extends MovableObject {
     "img/4_enemie_boss_chicken/2_alert/G9.png",
     "img/4_enemie_boss_chicken/2_alert/G10.png",
     "img/4_enemie_boss_chicken/2_alert/G11.png",
-    "img/4_enemie_boss_chicken/2_alert/G12.png"
+    "img/4_enemie_boss_chicken/2_alert/G12.png",
   ];
 
-  IMAGES_DEAD = [
-    "img/4_enemie_boss_chicken/5_dead/G24.png",
-    "img/4_enemie_boss_chicken/5_dead/G25.png",
-    "img/4_enemie_boss_chicken/5_dead/G26.png"
+  IMAGES_ATTACK = [
+    "img/4_enemie_boss_chicken/3_attack/G13.png",
+    "img/4_enemie_boss_chicken/3_attack/G14.png",
+    "img/4_enemie_boss_chicken/3_attack/G15.png",
+    "img/4_enemie_boss_chicken/3_attack/G16.png",
+    "img/4_enemie_boss_chicken/3_attack/G17.png",
+    "img/4_enemie_boss_chicken/3_attack/G18.png",
+    "img/4_enemie_boss_chicken/3_attack/G19.png",
+    "img/4_enemie_boss_chicken/3_attack/G20.png",
   ];
 
   IMAGES_HURT = [
     "img/4_enemie_boss_chicken/4_hurt/G21.png",
     "img/4_enemie_boss_chicken/4_hurt/G22.png",
-    "img/4_enemie_boss_chicken/4_hurt/G23.png"
+    "img/4_enemie_boss_chicken/4_hurt/G23.png",
   ];
 
-  offset = {
-    top: 160,
-    bottom: 100,
-    left: 60,
-    right: 40,
-  };
+  IMAGES_DEAD = [
+    "img/4_enemie_boss_chicken/5_dead/G24.png",
+    "img/4_enemie_boss_chicken/5_dead/G25.png",
+    "img/4_enemie_boss_chicken/5_dead/G26.png",
+  ];
+
+  offset = { top: 160, bottom: 100, left: 60, right: 40 };
+
+  is_active = false;
+  trigger_x = 1600;
+
+  alert_until = 0;
+  hurt_until = 0;
+  attack_until = 0;
+  next_attack_at = 0;
+
+  attack_duration_ms = 800;
+  attack_cooldown_ms = 2500;
+  hurt_duration_ms = 600;
+  alert_duration_ms = 1200;
 
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
+
     this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGES_DEAD);
+    this.loadImages(this.IMAGES_ALERT);
+    this.loadImages(this.IMAGES_ATTACK);
     this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_DEAD);
+
     this.x = 2500;
-    // this.health = 100;
+    this.speed = 4;
+
     this.animate();
   }
 
+  activate() {
+    if (this.is_active) return;
+
+    this.is_active = true;
+
+    const now = Date.now();
+    this.alert_until = now + this.alert_duration_ms;
+    this.next_attack_at =
+      now + this.alert_duration_ms + this.attack_cooldown_ms;
+  }
+
+  hit() {
+    super.hit();
+    const now = Date.now();
+    this.hurt_until = now + this.hurt_duration_ms;
+    this.attack_until = 0;
+  }
+
   animate() {
+    // Animation-State (welche Bilder laufen)
     setStoppableInterval(() => {
-      // Bilderanmiation
+      const now = Date.now();
+
+      if (this.isDead()) {
+        this.playAnimation(this.IMAGES_DEAD);
+        return;
+      }
+
+      if (now < this.hurt_until) {
+        this.playAnimation(this.IMAGES_HURT);
+        return;
+      }
+
+      if (this.is_active && now < this.alert_until) {
+        this.playAnimation(this.IMAGES_ALERT);
+        return;
+      }
+
+      if (this.is_active && now < this.attack_until) {
+        this.playAnimation(this.IMAGES_ATTACK);
+        return;
+      }
+
+      // Default: laufen
       this.playAnimation(this.IMAGES_WALKING);
     }, 200);
 
+    // Bewegung + Attack-Taktung
     setStoppableInterval(() => {
-     if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-      } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-      // } else if (this.isAboveGround()) {
-        // this.playAnimation(this.IMAGES_JUMPING);
-      // } else {
-        // if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-          // Wenn rechte ODER linke Pfeiltaste gedrückt wird
+      if (!this.is_active) return;
+      if (this.isDead()) return;
 
-          //Walk animation
-          // this.playAnimation(this.IMAGES_WALKING);
-        // }
+      const now = Date.now();
+
+      // während Alert: noch nicht loslaufen
+      if (now < this.alert_until) return;
+
+      // Attack-Burst zyklisch starten (nur wenn nicht gerade hurt)
+      if (now >= this.next_attack_at && now >= this.hurt_until) {
+        this.attack_until = now + this.attack_duration_ms;
+        this.next_attack_at = now + this.attack_cooldown_ms;
       }
+
+      this.moveLeft();
     }, 50);
   }
 }

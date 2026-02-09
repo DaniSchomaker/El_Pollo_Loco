@@ -43,6 +43,7 @@ class World {
   }
 
   handleGameplayChecks() {
+    this.checkEndbossTrigger();
     this.checkCollisions();
     this.checkBottleHits();
     this.checkThrowObjects();
@@ -302,6 +303,16 @@ class World {
   consumeBottleAndStartCooldown() {
     this.character.bottles--;
     this.character.lastThrow = Date.now();
+  }
+
+  checkEndbossTrigger() {
+    if (this.endboss.is_active) {
+      return;
+    }
+
+    if (this.character.x >= this.endboss.trigger_x) {
+      this.endboss.activate();
+    }
   }
 
   // ===== Weitere Helfer & Reset =====
