@@ -32,7 +32,6 @@ function closeControls() {
   overlay.classList.add("d_none");
 }
 
-
 function stopClick(event) {
   event.stopPropagation();
 }
@@ -41,61 +40,6 @@ function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
 }
-
-window.addEventListener("keydown", (e) => {
-  // Wenn Taste GEDRÜCKT wird
-  if (e.key === " ") {
-    keyboard.SPACE = true;
-  }
-
-  if (e.key === "ArrowLeft") {
-    keyboard.LEFT = true;
-  }
-
-  if (e.key === "ArrowUp") {
-    keyboard.UP = true;
-  }
-
-  if (e.key === "ArrowRight") {
-    keyboard.RIGHT = true;
-  }
-
-  if (e.key === "ArrowDown") {
-    keyboard.DOWN = true;
-  }
-
-  if (e.key === "d" || e.key === "D") {
-    keyboard.D = true;
-  }
-});
-
-window.addEventListener("keyup", (e) => {
-  // Wenn Taste LOSGELASSEN wird
-  if (e.key === " ") {
-    keyboard.SPACE = false;
-    e.preventDefault(); // Browser soll NICHT seinen eigenen Play/Pause-Quatsch machen
-  }
-
-  if (e.key === "ArrowLeft") {
-    keyboard.LEFT = false;
-  }
-
-  if (e.key === "ArrowUp") {
-    keyboard.UP = false;
-  }
-
-  if (e.key === "ArrowRight") {
-    keyboard.RIGHT = false;
-  }
-
-  if (e.key === "ArrowDown") {
-    keyboard.DOWN = false;
-  }
-
-  if (e.key === "d" || e.key === "D") {
-    keyboard.D = false;
-  }
-});
 
 // function startGame() {
 
@@ -125,8 +69,8 @@ function showEndscreen(type) {
 }
 
 function restartGame() {
-  const endscreen = document.getElementById('endscreen');
-  endscreen.classList.add('d_none');
+  const endscreen = document.getElementById("endscreen");
+  endscreen.classList.add("d_none");
 
   stopGame();
   world.stop();
@@ -135,7 +79,6 @@ function restartGame() {
   gameStarted = false;
   startGame();
 }
-
 
 function setStoppableInterval(fn, time) {
   let id = setInterval(fn, time);

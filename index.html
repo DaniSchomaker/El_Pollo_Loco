@@ -43,75 +43,110 @@
   <body onload="SoundHub.getFromLocalStorage()">
     <h1>El Pollo Loco</h1>
 
-    <div class="game_wrapper">
-      <div class="soundbar">
-        <button id="sound_toggle" onclick="SoundHub.toggleSound()">
-          <img
-            id="sound_icon"
-            src="./img/soundbar/sound_on.png"
-            alt="sound on"
-          />
-        </button>
-      </div>
-
-      <div id="start_screen" class="start_screen">
-        <img
-          class="start_screen_img"
-          src="./img/9_intro_outro_screens/start/startscreen_3.png"
-          alt="Startscreen"
-        />
-
-        <button class="button start_game" onclick="startGame()">
-          Start Game
-        </button>
-
-        <div class="endscreen_links startscreen_links">
-          <!-- endscreen-links-Klasse? -->
-          <a href="./impressum.html" class="button"
-            >Impressum</a
-          >
-          <button class="button" onclick="openControls()">Controls</button>
+    <div class="game_screen">
+      <div class="game_wrapper">
+        <!-- Soundbar  -->
+        <div class="soundbar">
+          <button id="sound_toggle" onclick="SoundHub.toggleSound()">
+            <img
+              id="sound_icon"
+              src="./img/icons/sound_on.png"
+              alt="sound on"
+            />
+          </button>
         </div>
-      </div>
 
-      <div
-        id="controls_overlay"
-        class="controls_overlay d_none"
-        onclick="closeControls()"
-      >
-        <div class="controls_card" onclick="stopClick(event)">
-          <h2>Controls</h2>
-          <button
-            class="controls_close"
-            onclick="closeControls()"
-            aria-label="close"
-          >
-            ✕
+        <!-- Startscreen  -->
+        <div id="start_screen" class="start_screen">
+          <img
+            class="start_screen_img"
+            src="./img/9_intro_outro_screens/start/startscreen_3.png"
+            alt="Startscreen"
+          />
+
+          <button class="button start_game" onclick="startGame()">
+            Start Game
           </button>
 
-          <ul class="controls_list">
-            <li><b>Move: </b>← / →</li>
-            <li><b>Jump: </b>Space</li>
-            <li><b>Throw: </b>D</li>
-          </ul>
+          <div class="endscreen_links startscreen_links">
+            <!-- endscreen-links-Klasse? -->
+            <a href="./impressum.html" class="button">Impressum</a>
+            <button class="button" onclick="openControls()">Controls</button>
+          </div>
+        </div>
+
+        <div
+          id="controls_overlay"
+          class="controls_overlay d_none"
+          onclick="closeControls()"
+        >
+          <div class="controls_card" onclick="stopClick(event)">
+            <h2>Controls</h2>
+            <button
+              class="controls_close"
+              onclick="closeControls()"
+              aria-label="close"
+            >
+              ✕
+            </button>
+
+            <ul class="controls_list">
+              <li><b>Move: </b>← / →</li>
+              <li><b>Jump: </b>Space</li>
+              <li><b>Throw: </b>D</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Canvas  -->
+        <canvas id="canvas" width="720" height="480"> </canvas>
+
+        <!-- Endscreen  -->
+        <div id="endscreen" class="endscreen d_none">
+          <img id="endscreen_img" src="" alt="Endscreen You won" />
+          <button
+            class="button start_game endscreen_restart"
+            onclick="restartGame()"
+          >
+            Play again
+          </button>
+
+          <div class="endscreen_links">
+            <a href="./impressum.html" class="button">Impressum</a>
+            <a href="./credits.html" class="button">Credits</a>
+          </div>
+        </div>
+
+        <!-- Mobile Controls  -->
+        <div class="controls_mobile">
+          <div class="controls_mobile_left">
+            <button class="button_mobile" id="button_left">
+              <img src="./img/icons/left_mobile.png" alt="move left" />
+            </button>
+
+            <button class="button_mobile" id="button_right">
+              <img src="./img/icons/right_mobile.png" alt="move right" />
+            </button>
+          </div>
+
+          <div class="controls_mobile_right">
+            <button class="button_mobile" id="button_jump">
+              <img src="./img/icons/jump_mobile.png" alt="jump" />
+            </button>
+
+            <button class="button_mobile" id="button_throw">
+              <img src="./img/icons/bottle_mobile.png" alt="throw" />
+            </button>
+          </div>
         </div>
       </div>
 
-      <canvas id="canvas" width="720" height="480"> </canvas>
-
-      <div id="endscreen" class="endscreen d_none">
-        <img id="endscreen_img" src="" alt="Endscreen You won" />
-        <button
-          class="button start_game endscreen_restart"
-          onclick="restartGame()"
-        >
-          Play again
-        </button>
-
-        <div class="endscreen_links">
-          <a href="./impressum.html" class="button">Impressum</a>
-          <a href="./credits.html" class="button">Credits</a>
-        </div>
+      <div class="rotate_overlay">
+        <img
+          class="rotate_overlay_img"
+          src="./img/rotate_phone.png"
+          alt="Bitte drehe Dein Handy"
+        />
       </div>
     </div>
   </body>

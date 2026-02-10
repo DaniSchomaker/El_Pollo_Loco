@@ -38,11 +38,43 @@ p {
 a {
   color: rgb(192, 192, 192);
   text-decoration: none;
+  text-align: center;
+}
+
+.game_screen {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 720 / 480;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .game_wrapper {
-  position: relative; /* Bezugspunkt für .soundbar */
-  display: inline-block; /* Canvas-Größe bestimmt Container */
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rotate_overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 9999;
+}
+
+.rotate_overlay_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ----------------------------- */
@@ -87,6 +119,14 @@ a {
 .start_screen_actions .button {
   position: static;
   width: 180px;
+}
+
+/* ----------------------------- */
+/* Mobile Controls (default: hidden) */
+/* ----------------------------- */
+
+.controls_mobile {
+  display: none;
 }
 
 /* ----------------------------- */
@@ -284,7 +324,45 @@ a {
   color: black;
 }
 
-/* ////// Tablet/Smartphone ////// */
+.controls_mobile {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+
+  display: none;
+
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 16px;
+}
+
+.controls_mobile_left,
+.controls_mobile_right {
+  display: flex;
+  gap: 16px;
+  pointer-events: auto; /* Buttons sind klickbar */
+}
+
+.button_mobile {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: rgba(255, 140, 33, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button_mobile img {
+  width: 70%;
+  height: 70%;
+}
+
+/* ============================= */
+/* Responsive Canvas Scaling    */
+/* ============================= */
 
 @media only screen and (max-width: 720px) {
   canvas {
@@ -295,5 +373,21 @@ a {
 @media only screen and (max-height: 480px) {
   canvas {
     height: 100vh;
+  }
+}
+
+/* ============================= */
+/* Mobile Controls (Touch only) */
+/* ============================= */
+
+/* Default: mobile controls hidden */
+.controls_mobile {
+  display: none;
+}
+
+/* Touch device + Landscape → show mobile controls */
+@media (hover: none) and (orientation: landscape) {
+  .controls_mobile {
+    display: flex;
   }
 }
