@@ -386,11 +386,17 @@ a {
 }
 
 /* Touch device + Landscape → show mobile controls */
+/* Touch device + Landscape → mobile controls ONLY when game is running */
 @media (hover: none) and (orientation: landscape) {
   .controls_mobile {
+    display: none;
+  }
+
+  body.game_running .controls_mobile {
     display: flex;
   }
 }
+
 
 @media (hover: none) and (orientation: portrait) {
   .rotate_overlay {

@@ -15,6 +15,7 @@ function startGame() {
   gameStarted = true;
   hideStartScreen();
   init();
+  showMobileControls();
 }
 
 function hideStartScreen() {
@@ -66,9 +67,11 @@ function showEndscreen(type) {
   screen.classList.remove("d_none");
 
   SoundHub.pauseAll();
+  hideMobileControls();
 }
 
 function restartGame() {
+  hideMobileControls();
   const endscreen = document.getElementById("endscreen");
   endscreen.classList.add("d_none");
 
@@ -90,3 +93,12 @@ function stopGame() {
   intervalIds.forEach(clearInterval);
   intervalIds = [];
 }
+
+function showMobileControls() {
+  document.body.classList.add("game_running");
+}
+
+function hideMobileControls() {
+  document.body.classList.remove("game_running");
+}
+
