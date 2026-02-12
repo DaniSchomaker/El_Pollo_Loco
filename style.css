@@ -458,19 +458,31 @@ a {
 /* Smartphone Portrait: rotate overlay */
 /* ============================= */
 @media (hover: none) and (pointer: coarse) and (orientation: portrait) {
-  .rotate_overlay { display: flex; }
-  .game_screen { display: none; }
-  h1 { display: none; }
+  .rotate_overlay {
+    display: flex;
+  }
+  .game_screen {
+    display: none;
+  }
+  h1 {
+    display: none;
+  }
 }
 
 /* ============================= */
 /* Smartphone Landscape Fullscreen (nur kleine Höhen -> echte Phones) */
 /* ============================= */
 @media (hover: none) and (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
-  .rotate_overlay { display: none; }
-  h1 { display: none; }
+  .rotate_overlay {
+    display: none;
+  }
+  h1 {
+    display: none;
+  }
 
-  body { overflow: hidden; }
+  body {
+    overflow: hidden;
+  }
 
   .game_screen {
     width: 100vw;
@@ -484,7 +496,6 @@ a {
     align-items: center;
   }
 
-  /* Canvas volle Höhe, zentriert; links/rechts bleibt Body-Hintergrund sichtbar */
   canvas {
     height: 100vh;
     width: auto;
@@ -502,5 +513,65 @@ a {
     height: 100%;
     width: auto;
     object-fit: contain;
+  }
+}
+
+/* ============================= */
+/* Tablet Landscape Optimierung */
+/* ============================= */
+@media (hover: none) and (pointer: coarse) and (orientation: landscape) and (min-height: 600px) {
+  body {
+    overflow: hidden;
+  }
+
+  .game_screen {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  canvas {
+    height: min(65vh, 480px);
+    width: auto;
+    display: block;
+  }
+
+  .start_screen,
+  .endscreen {
+    height: min(65vh, 480px);
+    width: auto;
+  }
+
+  .start_screen_img,
+  #endscreen_img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+  }
+
+  /* --------- MOBILE BUTTONS (Tablet Layout) --------- */
+
+  body.game_running .controls_mobile {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 60px;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  body.game_running .controls_mobile_left,
+  body.game_running .controls_mobile_right {
+    pointer-events: auto;
+    gap: 28px;
+  }
+
+  body.game_running .button_mobile {
+    width: 80px;
+    height: 80px;
   }
 }
