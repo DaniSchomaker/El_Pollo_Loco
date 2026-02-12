@@ -56,6 +56,13 @@ a {
   display: inline-block;
 }
 
+.content_container {
+  max-width: 1440px;
+  padding: 0;
+  margin: 0 auto; 
+}
+
+
 .rotate_overlay {
   position: fixed;
   inset: 0;
@@ -400,19 +407,33 @@ a {
   display: none;
 }
 
-/* Touch device + Landscape → show mobile controls */
-/* Touch device + Landscape → mobile controls ONLY when game is running */
-@media (hover: none) and (orientation: landscape) {
-  .controls_mobile {
-    display: none;
-  }
+/* ================================================= */
+/* DEFAULT: Mobile controls hidden                  */
+/* ================================================= */
 
+.controls_mobile {
+  display: none;
+}
+
+
+/* ================================================= */
+/* TOUCH DEVICES (Basis)                            */
+/* ================================================= */
+
+@media (pointer: coarse) and (max-width: 1400px) {
   body.game_running .controls_mobile {
     display: flex;
   }
 }
 
-@media (hover: none) and (orientation: portrait) {
+
+
+/* ================================================= */
+/* PHONE PORTRAIT → Rotate Overlay                  */
+/* ================================================= */
+
+@media (pointer: coarse) and (orientation: portrait) {
+
   .rotate_overlay {
     display: flex;
   }
@@ -421,62 +442,24 @@ a {
     display: none;
   }
 
-  h1 {
+  .game-title {
     display: none;
   }
+
 }
 
-/* ============================= */
-/* Smartphone Landscape Fullscreen */
-/* ============================= */
 
-@media (hover: none) and (orientation: landscape) and (max-height: 500px) {
-  h1 {
-    display: none;
-  }
+/* ================================================= */
+/* PHONE LANDSCAPE (kleine Geräte)                  */
+/* ================================================= */
 
-  .game_screen {
-    width: 100vw;
-    height: 100vh;
-    max-width: none;
-    max-height: none;
-    aspect-ratio: auto;
-  }
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
 
-  canvas {
-    width: 100%;
-    height: 100%;
-  }
-
-  /* optional: damit nix scrollt */
-  body {
-    overflow: hidden;
-  }
-}
-
-/* ============================= */
-/* Smartphone Portrait: rotate overlay */
-/* ============================= */
-@media (hover: none) and (pointer: coarse) and (orientation: portrait) {
-  .rotate_overlay {
-    display: flex;
-  }
-  .game_screen {
-    display: none;
-  }
-  h1 {
-    display: none;
-  }
-}
-
-/* ============================= */
-/* Smartphone Landscape Fullscreen (nur kleine Höhen -> echte Phones) */
-/* ============================= */
-@media (hover: none) and (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
   .rotate_overlay {
     display: none;
   }
-  h1 {
+
+  .game-title {
     display: none;
   }
 
@@ -488,9 +471,7 @@ a {
     width: 100vw;
     height: 100vh;
     max-width: none;
-    max-height: none;
     aspect-ratio: auto;
-    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -516,10 +497,13 @@ a {
   }
 }
 
-/* ============================= */
-/* Tablet Landscape Optimierung */
-/* ============================= */
-@media (hover: none) and (pointer: coarse) and (orientation: landscape) and (min-height: 600px) {
+
+/* ================================================= */
+/* TABLET LANDSCAPE                                 */
+/* ================================================= */
+
+@media (pointer: coarse) and (max-width: 1400px) and (orientation: landscape) and (min-height: 600px) {
+
   body {
     overflow: hidden;
   }
@@ -550,7 +534,7 @@ a {
     object-fit: contain;
   }
 
-  /* --------- MOBILE BUTTONS (Tablet Layout) --------- */
+  /* ---------- Tablet Button Position ---------- */
 
   body.game_running .controls_mobile {
     position: fixed;
@@ -574,4 +558,5 @@ a {
     width: 80px;
     height: 80px;
   }
+
 }
