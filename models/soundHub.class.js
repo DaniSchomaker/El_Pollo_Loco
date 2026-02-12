@@ -11,6 +11,8 @@ class SoundHub {
   static bottleShattering = new Audio("../audio/bottleShattering.mp3");
   static snoring = new Audio("../audio/snoring.mp3");
   static chickenClucks = new Audio("../audio/chickenClucks.mp3");
+  static win = new Audio("../audio/win.mp3");
+  static lose = new Audio("../audio/lose.mp3");
 
   // Array, das alle definierten Audio-Dateien enthält
   static allSounds = [
@@ -24,6 +26,8 @@ class SoundHub {
     SoundHub.bottleShattering,
     SoundHub.snoring,
     SoundHub.chickenClucks,
+    SoundHub.win,
+    SoundHub.lose,
   ];
 
   // Spielt eine einzelne Audiodatei ab
@@ -65,42 +69,69 @@ class SoundHub {
     // instrumentImg.classList.remove('active'); // nur wichtig für die Visualisierung
   }
 
-  static toggleSound() {
-    const button = document.getElementById("sound_toggle");
-    const icon = document.getElementById("sound_icon");
-    const isMuted = button.classList.toggle("sound_off"); // CSS-Klasse wechseln
+static toggleSound() {
+  const button = document.getElementById("sound_toggle");
+  const icon = document.getElementById("sound_icon");
 
-    if (isMuted) {
-      SoundHub.isMuted = true;
-      SoundHub.pauseAll();
-      icon.src = "./img/icons/sound_off.png";
-    } else {
-      SoundHub.isMuted = false;
-      SoundHub.playLoop(SoundHub.mainTheme);
-      icon.src = "./img/icons/sound_on.png";
-    }
-    SoundHub.saveToLocalStorage();
+  SoundHub.isMuted = !SoundHub.isMuted;
+
+  button.classList.toggle("sound_off", SoundHub.isMuted);
+
+  if (SoundHub.isMuted) {
+    SoundHub.pauseAll();
+    icon.src = "./img/icons/sound_off.png";
+  } else {
+    SoundHub.playLoop(SoundHub.mainTheme);
+    icon.src = "./img/icons/sound_on.png";
   }
+
+  SoundHub.saveToLocalStorage();
+  button.blur();
+}
+
 
   static saveToLocalStorage() {
     localStorage.setItem("isMuted", JSON.stringify(SoundHub.isMuted));
   }
 
-  static getFromLocalStorage() {
-    const storedValue = localStorage.getItem("isMuted");
-    if (storedValue !== null) {
-      SoundHub.isMuted = JSON.parse(storedValue);
-      if (SoundHub.isMuted) {
-        SoundHub.pauseAll();
-        document.getElementById("sound_icon").src =
-          "./img/icons/sound_off.png";
-      } else {
-        SoundHub.playLoop(SoundHub.mainTheme);
-        document.getElementById("sound_icon").src =
-          "./img/icons/sound_on.png";
-      }
-    }
+static getFromLocalStorage() {
+  const storedValue = localStorage.getItem("isMuted");
+
+  // WICHTIG: Wenn nix gespeichert ist -> Default: MUTE
+  if (storedValue === null) {
+    SoundHub.isMuted = true;
+
+    const icon = document.getElementById("sound_icon");
+    const button = document.getElementById("sound_toggle");
+
+    if (button) button.classList.add("sound_off");
+    if (icon) icon.src = "./img/icons/sound_off.png";
+
+    SoundHub.pauseAll();
+
+    // Optional, aber sinnvoll: Default direkt speichern
+    SoundHub.saveToLocalStorage();
+    return;
   }
+
+  // Normalfall: gespeicherten Wert nutzen
+  SoundHub.isMuted = JSON.parse(storedValue);
+
+  const icon = document.getElementById("sound_icon");
+  const button = document.getElementById("sound_toggle");
+
+  if (button) button.classList.toggle("sound_off", SoundHub.isMuted);
+
+  if (SoundHub.isMuted) {
+    SoundHub.pauseAll();
+    if (icon) icon.src = "./img/icons/sound_off.png";
+  } else {
+    SoundHub.playLoop(SoundHub.mainTheme);
+    if (icon) icon.src = "./img/icons/sound_on.png";
+  }
+}
+
+
 
 static startWalking() {
   if (SoundHub.isMuted) return;

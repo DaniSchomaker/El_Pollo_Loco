@@ -67,6 +67,12 @@ function showEndscreen(type) {
   screen.classList.remove("d_none");
 
   SoundHub.pauseAll();
+  if (type === "win") {
+    SoundHub.playOne(SoundHub.win);
+  } else {
+    SoundHub.playOne(SoundHub.lose);
+  }
+
   hideMobileControls();
 }
 
@@ -82,10 +88,9 @@ function restartGame() {
   gameStarted = false;
   startGame();
 
-    if (!SoundHub.isMuted) {
+  if (!SoundHub.isMuted) {
     SoundHub.playLoop(SoundHub.mainTheme);
   }
-
 }
 
 function setStoppableInterval(fn, time) {
@@ -106,4 +111,3 @@ function showMobileControls() {
 function hideMobileControls() {
   document.body.classList.remove("game_running");
 }
-
