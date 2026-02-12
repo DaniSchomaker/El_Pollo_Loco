@@ -16,7 +16,12 @@ function startGame() {
   hideStartScreen();
   init();
   showMobileControls();
+
+  if (!SoundHub.isMuted) {
+    SoundHub.playLoop(SoundHub.mainTheme);
+  }
 }
+
 
 function hideStartScreen() {
   const startScreen = document.getElementById("start_screen");
@@ -111,3 +116,5 @@ function showMobileControls() {
 function hideMobileControls() {
   document.body.classList.remove("game_running");
 }
+
+

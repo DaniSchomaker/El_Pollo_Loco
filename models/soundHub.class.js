@@ -72,22 +72,26 @@ class SoundHub {
 static toggleSound() {
   const button = document.getElementById("sound_toggle");
   const icon = document.getElementById("sound_icon");
+  const isMuted = button.classList.toggle("sound_off");
 
-  SoundHub.isMuted = !SoundHub.isMuted;
-
-  button.classList.toggle("sound_off", SoundHub.isMuted);
+  SoundHub.isMuted = isMuted;
 
   if (SoundHub.isMuted) {
     SoundHub.pauseAll();
     icon.src = "./img/icons/sound_off.png";
   } else {
-    SoundHub.playLoop(SoundHub.mainTheme);
     icon.src = "./img/icons/sound_on.png";
+
+    // MainTheme NUR starten, wenn das Spiel läuft
+    if (document.body.classList.contains("game_running")) {
+      SoundHub.playLoop(SoundHub.mainTheme);
+    }
   }
 
   SoundHub.saveToLocalStorage();
   button.blur();
 }
+
 
 
   static saveToLocalStorage() {
@@ -97,39 +101,23 @@ static toggleSound() {
 static getFromLocalStorage() {
   const storedValue = localStorage.getItem("isMuted");
 
-  // WICHTIG: Wenn nix gespeichert ist -> Default: MUTE
+  SoundHub.isMuted = storedValue === null ? true : JSON.parse(storedValue);
+
   if (storedValue === null) {
-    SoundHub.isMuted = true;
-
-    const icon = document.getElementById("sound_icon");
-    const button = document.getElementById("sound_toggle");
-
-    if (button) button.classList.add("sound_off");
-    if (icon) icon.src = "./img/icons/sound_off.png";
-
-    SoundHub.pauseAll();
-
-    // Optional, aber sinnvoll: Default direkt speichern
-    SoundHub.saveToLocalStorage();
-    return;
+    localStorage.setItem("isMuted", "true");
   }
 
-  // Normalfall: gespeicherten Wert nutzen
-  SoundHub.isMuted = JSON.parse(storedValue);
-
-  const icon = document.getElementById("sound_icon");
   const button = document.getElementById("sound_toggle");
+  const icon = document.getElementById("sound_icon");
 
-  if (button) button.classList.toggle("sound_off", SoundHub.isMuted);
+  button.classList.toggle("sound_off", SoundHub.isMuted);
+  icon.src = SoundHub.isMuted
+    ? "./img/icons/sound_off.png"
+    : "./img/icons/sound_on.png";
 
-  if (SoundHub.isMuted) {
-    SoundHub.pauseAll();
-    if (icon) icon.src = "./img/icons/sound_off.png";
-  } else {
-    SoundHub.playLoop(SoundHub.mainTheme);
-    if (icon) icon.src = "./img/icons/sound_on.png";
-  }
+  SoundHub.pauseAll();
 }
+
 
 
 
