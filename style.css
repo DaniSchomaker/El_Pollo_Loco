@@ -53,15 +53,14 @@ a {
 
 .game_wrapper {
   position: relative;
-  display: inline-block;
+  display: block;
 }
 
 .content_container {
   max-width: 1440px;
   padding: 0;
-  margin: 0 auto; 
+  margin: 0 auto;
 }
-
 
 .rotate_overlay {
   position: fixed;
@@ -397,16 +396,6 @@ a {
   width: 70%;
   height: 70%;
 }
-
-/* ============================= */
-/* Mobile Controls (Touch only) */
-/* ============================= */
-
-/* Default: mobile controls hidden */
-.controls_mobile {
-  display: none;
-}
-
 /* ================================================= */
 /* DEFAULT: Mobile controls hidden                  */
 /* ================================================= */
@@ -414,7 +403,6 @@ a {
 .controls_mobile {
   display: none;
 }
-
 
 /* ================================================= */
 /* TOUCH DEVICES (Basis)                            */
@@ -426,14 +414,11 @@ a {
   }
 }
 
-
-
 /* ================================================= */
 /* PHONE PORTRAIT → Rotate Overlay                  */
 /* ================================================= */
 
 @media (pointer: coarse) and (orientation: portrait) {
-
   .rotate_overlay {
     display: flex;
   }
@@ -445,16 +430,13 @@ a {
   .game-title {
     display: none;
   }
-
 }
-
 
 /* ================================================= */
 /* PHONE LANDSCAPE (kleine Geräte)                  */
 /* ================================================= */
 
 @media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
-
   .rotate_overlay {
     display: none;
   }
@@ -477,33 +459,37 @@ a {
     align-items: center;
   }
 
-  canvas {
+  .game_wrapper {
     height: 100vh;
+  }
+
+  canvas {
+    height: 100%;
     width: auto;
     display: block;
   }
 
   .start_screen,
   .endscreen {
-    height: 100vh;
-    width: auto;
+    width: 100%;
+    height: 100%;
   }
 
   .start_screen_img,
   #endscreen_img {
+    width: 100%;
     height: 100%;
-    width: auto;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: center;
+    display: block;
   }
 }
-
 
 /* ================================================= */
 /* TABLET LANDSCAPE                                 */
 /* ================================================= */
 
 @media (pointer: coarse) and (max-width: 1400px) and (orientation: landscape) and (min-height: 600px) {
-
   body {
     overflow: hidden;
   }
@@ -521,17 +507,29 @@ a {
     display: block;
   }
 
+  .game_wrapper {
+    height: min(65vh, 480px);
+  }
+
+  canvas {
+    height: 100%;
+    width: auto;
+    display: block;
+  }
+
   .start_screen,
   .endscreen {
-    height: min(65vh, 480px);
-    width: auto;
+    width: 100%;
+    height: 100%;
   }
 
   .start_screen_img,
   #endscreen_img {
+    width: 100%;
     height: 100%;
-    width: auto;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: center;
+    display: block;
   }
 
   /* ---------- Tablet Button Position ---------- */
@@ -558,5 +556,4 @@ a {
     width: 80px;
     height: 80px;
   }
-
 }
