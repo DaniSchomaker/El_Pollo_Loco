@@ -81,6 +81,11 @@ function restartGame() {
   initLevel();
   gameStarted = false;
   startGame();
+
+    if (!SoundHub.isMuted) {
+    SoundHub.playLoop(SoundHub.mainTheme);
+  }
+
 }
 
 function setStoppableInterval(fn, time) {
