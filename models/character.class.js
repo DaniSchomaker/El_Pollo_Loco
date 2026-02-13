@@ -21,6 +21,10 @@ class Character extends MovableObject {
   JUMP_ASCEND_FRAME = 3;
   JUMP_DESCEND_FRAME = 7;
 
+  deathStarted = false;
+  deathStartTime = 0;
+  DEATH_ANIMATION_MS = 350;
+
   // ——— Sprites ———
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -160,6 +164,7 @@ class Character extends MovableObject {
   // ——— Animationszustände (ohne Idle) ———
   updateAnimationState() {
     if (this.isDead()) {
+      this.startDeathSequence();
       this.playAnimation(this.IMAGES_DEAD);
       return;
     }
@@ -302,5 +307,20 @@ class Character extends MovableObject {
   wakeFromAction() {
     this.resetSleep();
     this.lastActionTime = Date.now();
+  }
+
+  startDeathSequence() {
+    if (this.deathStarted) return;
+    this.deathStarted = true;
+    this.deathStartTime = Date.now();
+    this.currentImage = 0;
+
+    SoundHub.stopWalking();
+    this.isWalkingSoundPlaying = false;
+  }
+
+  isDeathAnimationFinished() {
+    if (!this.deathStarted) return false;
+    return Date.now() - this.deathStartTime >= this.DEATH_ANIMATION_MS;
   }
 }

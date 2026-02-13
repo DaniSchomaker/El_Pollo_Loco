@@ -49,15 +49,24 @@ class World {
     this.checkThrowObjects();
   }
 
-  handleGameOverConditions() {
-    if (this.character.isDead()) {
+handleGameOverConditions() {
+  if (this.character.isDead()) {
+    this.gameOver = true;
+
+    this.character.startDeathSequence();
+
+    if (this.character.isDeathAnimationFinished()) {
       this.endGame("lose");
     }
 
-    if (this.endboss.isDead() && !this.gameOver) {
-      this.endGameWithDelay("win", 700);
-    }
+    return;
   }
+
+  if (this.endboss.isDead() && !this.gameOver) {
+    this.endGameWithDelay("win", 700);
+  }
+}
+
 
   endGame(result) {
     stopGame();
