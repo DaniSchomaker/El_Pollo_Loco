@@ -45,7 +45,7 @@ class SoundHub {
   static playLoop(sound) {
     if (SoundHub.isMuted) return;
     sound.loop = true;
-    sound.volume = 0.6;
+    sound.volume = 1;
     sound.currentTime = 0;
     sound.play().catch(() => {
       // kein console.warn mehr, stillschweigend ignorieren
