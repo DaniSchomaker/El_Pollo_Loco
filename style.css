@@ -444,7 +444,7 @@ a {
     display: none;
   }
 
-  body {
+  .page_game {
     overflow: hidden;
     height: 100dvh;
     min-height: 100dvh;
@@ -500,7 +500,7 @@ a {
 /* ================================================= */
 
 @media (pointer: coarse) and (max-width: 1400px) and (orientation: landscape) and (min-height: 600px) {
-  body {
+  .page_game {
     overflow: hidden;
   }
 
