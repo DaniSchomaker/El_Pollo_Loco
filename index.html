@@ -2,7 +2,10 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <title>El Pollo Loco</title>
 
     <link rel="icon" type="image/x-icon" href="./img/Favicon.png" />
@@ -55,11 +58,13 @@
       <div class="game_wrapper">
         <!-- Soundbar  -->
         <div class="soundbar">
-<button id="sound_toggle" onclick="SoundHub.toggleSound()" tabindex="-1">
-  <img id="sound_icon" src="./img/icons/sound_off.png" alt="sound" />
-
-</button>
-
+          <button
+            id="sound_toggle"
+            onclick="SoundHub.toggleSound()"
+            tabindex="-1"
+          >
+            <img id="sound_icon" src="./img/icons/sound_off.png" alt="sound" />
+          </button>
         </div>
 
         <!-- Startscreen  -->
@@ -109,13 +114,13 @@
 
         <!-- Endscreen  -->
         <div id="endscreen" class="endscreen d_none">
-          <img id="endscreen_img" src="" alt="Endscreen You won" />
-          <button
-            class="button start_game endscreen_restart"
-            onclick="restartGame()"
-          >
-            Play again
-          </button>
+          <img id="endscreen_img" src="" alt="Endscreen" />
+
+          <div class="endscreen_top_buttons">
+            <button class="button" onclick="restartGame()">Play again</button>
+
+            <button class="button" onclick="backToHome()">Back Home</button>
+          </div>
 
           <div class="endscreen_links">
             <a href="./impressum.html" class="button">Impressum</a>

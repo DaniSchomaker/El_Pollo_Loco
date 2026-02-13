@@ -266,18 +266,33 @@ a {
   display: block;
 }
 
-.endscreen_restart {
-  position: absolute;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
-}
-
 .endscreen_links {
   position: absolute;
   z-index: 1;
 }
+
+/* ============================= */
+/* Endscreen Top Buttons         */
+/* ============================= */
+
+.endscreen_top_buttons {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  z-index: 1;
+}
+
+.endscreen_top_buttons .button {
+  position: static;
+  width: 160px;
+}
+
 
 /* Hover für zentrierte Buttons */
 .start_game:hover,

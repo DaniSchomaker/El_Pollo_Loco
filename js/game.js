@@ -13,6 +13,7 @@ function startGame() {
   }
 
   gameStarted = true;
+  initLevel();
   hideStartScreen();
   init();
   showMobileControls();
@@ -116,5 +117,24 @@ function showMobileControls() {
 function hideMobileControls() {
   document.body.classList.remove("game_running");
 }
+
+function backToHome() {
+  const endscreen = document.getElementById("endscreen");
+  endscreen.classList.add("d_none");
+
+  hideMobileControls();
+
+  stopGame();
+  world.stop();
+  world = null;
+
+  gameStarted = false;
+
+  const startScreen = document.getElementById("start_screen");
+  startScreen.classList.remove("d_none");
+
+  SoundHub.pauseAll();
+}
+
 
 
