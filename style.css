@@ -271,6 +271,14 @@ a {
   z-index: 1;
 }
 
+.button_mobile,
+.button_mobile img {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+
 /* ============================= */
 /* Endscreen Top Buttons         */
 /* ============================= */

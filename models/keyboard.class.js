@@ -9,6 +9,7 @@ class Keyboard {
   constructor() {
     this.bindKeyboardEvents();
     this.bindTouchEvents();
+    this.disableContextMenu();
   }
 
   /* ========================= */
@@ -50,6 +51,15 @@ class Keyboard {
       this.bindTouch("button_throw", "D");
     });
   }
+
+  disableContextMenu() {
+  document.querySelectorAll('.button_mobile').forEach(button => {
+    button.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+  });
+}
+
 
   bindTouch(buttonId, keyName) {
     document.getElementById(buttonId)?.addEventListener(
