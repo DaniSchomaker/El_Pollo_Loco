@@ -22,8 +22,7 @@ class Character extends MovableObject {
   JUMP_DESCEND_FRAME = 7;
 
   deathStarted = false;
-  deathStartTime = 0;
-  DEATH_ANIMATION_MS = 350;
+  deathEndFramePath = "";
 
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -390,19 +389,24 @@ class Character extends MovableObject {
   startDeathSequence() {
     if (this.deathStarted) return;
     this.deathStarted = true;
-    this.deathStartTime = Date.now();
     this.currentImage = 0;
+    this.deathEndFramePath = this.IMAGES_DEAD[this.IMAGES_DEAD.length - 1];
 
     SoundHub.stopWalking();
     this.isWalkingSoundPlaying = false;
   }
 
   /**
-   * Checks whether the death animation duration has elapsed.
+   * Checks whether the death animation reached its last frame.
    * @returns {boolean}
    */
   isDeathAnimationFinished() {
     if (!this.deathStarted) return false;
-    return Date.now() - this.deathStartTime >= this.DEATH_ANIMATION_MS;
+    if (!this.img || !this.img.src) return false;
+
+    const isLastFrameVisible = this.img.src.includes(this.deathEndFramePath);
+    const hasPlayedAllFrames = this.currentImage >= this.IMAGES_DEAD.length;
+
+    return isLastFrameVisible && hasPlayedAllFrames;
   }
 }
