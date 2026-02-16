@@ -53,13 +53,21 @@ class Keyboard {
   }
 
   disableContextMenu() {
-  document.querySelectorAll('.button_mobile').forEach(button => {
-    button.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-    });
-  });
-}
+    const bind = () => {
+      document.querySelectorAll(".button_mobile").forEach((button) => {
+        button.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+        });
+      });
+    };
 
+    if (document.readyState === "loading") {
+      window.addEventListener("DOMContentLoaded", bind, { once: true });
+      return;
+    }
+
+    bind();
+  }
 
   bindTouch(buttonId, keyName) {
     document.getElementById(buttonId)?.addEventListener(
