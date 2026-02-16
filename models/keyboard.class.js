@@ -1,3 +1,6 @@
+/**
+ * Handles keyboard input (desktop) and touch input (mobile) for the game.
+ */
 class Keyboard {
   LEFT = false;
   RIGHT = false;
@@ -6,21 +9,27 @@ class Keyboard {
   SPACE = false;
   D = false;
 
+  /**
+   * Creates a Keyboard instance and binds all relevant input events.
+   */
   constructor() {
     this.bindKeyboardEvents();
     this.bindTouchEvents();
     this.disableContextMenu();
   }
 
-  /* ========================= */
-  /* Keyboard (Desktop)        */
-  /* ========================= */
-
+  /**
+   * Binds keydown/keyup listeners for desktop controls.
+   */
   bindKeyboardEvents() {
     window.addEventListener("keydown", (e) => this.keyDown(e));
     window.addEventListener("keyup", (e) => this.keyUp(e));
   }
 
+  /**
+   * Handles keydown events.
+   * @param {KeyboardEvent} e
+   */
   keyDown(e) {
     if (e.key === "ArrowLeft") this.LEFT = true;
     if (e.key === "ArrowRight") this.RIGHT = true;
@@ -30,6 +39,10 @@ class Keyboard {
     if (e.key === "d" || e.key === "D") this.D = true;
   }
 
+  /**
+   * Handles keyup events.
+   * @param {KeyboardEvent} e
+   */
   keyUp(e) {
     if (e.key === "ArrowLeft") this.LEFT = false;
     if (e.key === "ArrowRight") this.RIGHT = false;
@@ -39,10 +52,9 @@ class Keyboard {
     if (e.key === "d" || e.key === "D") this.D = false;
   }
 
-  /* ========================= */
-  /* Touch (Mobile)            */
-  /* ========================= */
-
+  /**
+   * Binds touch listeners for mobile controls after DOM is ready.
+   */
   bindTouchEvents() {
     window.addEventListener("DOMContentLoaded", () => {
       this.bindTouch("button_left", "LEFT");
@@ -52,6 +64,9 @@ class Keyboard {
     });
   }
 
+  /**
+   * Disables the context menu for mobile control buttons.
+   */
   disableContextMenu() {
     const bind = () => {
       document.querySelectorAll(".button_mobile").forEach((button) => {
@@ -69,6 +84,11 @@ class Keyboard {
     bind();
   }
 
+  /**
+   * Binds touchstart/touchend/touchcancel for a given button id to a key state.
+   * @param {string} buttonId
+   * @param {"LEFT"|"RIGHT"|"UP"|"DOWN"|"SPACE"|"D"} keyName
+   */
   bindTouch(buttonId, keyName) {
     document.getElementById(buttonId)?.addEventListener(
       "touchstart",
@@ -76,7 +96,7 @@ class Keyboard {
         e.preventDefault();
         this[keyName] = true;
       },
-      { passive: false },
+      { passive: false }
     );
 
     document.getElementById(buttonId)?.addEventListener(
@@ -85,7 +105,7 @@ class Keyboard {
         e.preventDefault();
         this[keyName] = false;
       },
-      { passive: false },
+      { passive: false }
     );
 
     document.getElementById(buttonId)?.addEventListener(
@@ -94,7 +114,7 @@ class Keyboard {
         e.preventDefault();
         this[keyName] = false;
       },
-      { passive: false },
+      { passive: false }
     );
   }
 }

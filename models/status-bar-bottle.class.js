@@ -1,3 +1,6 @@
+/**
+ * Status bar displaying the current bottle percentage.
+ */
 class StatusBarBottle extends StatusBar {
   IMAGES = [
     "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png",
@@ -8,6 +11,9 @@ class StatusBarBottle extends StatusBar {
     "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png"
   ];
 
+  /**
+   * Creates a StatusBarBottle instance and initializes it with 0%.
+   */
   constructor() {
     super();
     this.x = 20;

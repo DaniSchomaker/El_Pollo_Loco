@@ -1,12 +1,14 @@
+/**
+ * Base class for movable game objects.
+ * Adds physics, collision detection, and basic movement utilities.
+ */
 class MovableObject extends DrawableObject {
   speed = 0.15;
-  otherDirection = false; // Bild spiegeln (wenn linke Pfeiltaste gedrückt wird)
+  otherDirection = false;
 
-  // Gravitation
-  speedY = 0; // Geschwindigkeit Y-Achse --> Wie schnell etwas herunterfällt
-  acceleration = 2.5; // Beschleunigung
+  speedY = 0;
+  acceleration = 2.5;
 
-  // für Collision --> ggf. umlagern in Klasse "CollidableObject"
   offset = {
     top: 0,
     bottom: 0,
@@ -17,8 +19,9 @@ class MovableObject extends DrawableObject {
   health = 100;
   lastHit = 0;
 
-  //////////////////////////////////////////////////////////
-
+  /**
+   * Applies gravity to the object via a fixed interval.
+   */
   applyGravity() {
     setStoppableInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -28,61 +31,79 @@ class MovableObject extends DrawableObject {
     }, 1000 / 25);
   }
 
+  /**
+   * Determines whether the object is above the ground level.
+   * @returns {boolean}
+   */
   isAboveGround() {
-    // Abfrage, ob der Character in der Luft ist
     if (this instanceof ThrowableObject) {
-      return true; // damit die Flasche auf den Boden fallen kann
+      return true;
     } else {
       return this.y + this.height < this.world.level.groundLevel;
     }
   }
 
-
-  // character.isColliding(chicken);
+  /**
+   * Checks collision with another movable object using offsets.
+   * @param {any} mo
+   * @returns {boolean}
+   */
   isColliding(mo) {
-    // Offset für den roten inneren Kasten (statt der äußere blaue)
     return (
-      this.x + this.width - this.offset.right > mo.x + mo.offset.left && //(warum +???) checken, ob rechte Seite des Characters > linke Seite Chicken // Offset --> "innerer roter Kasten in dem äußeren blauben"
-      this.y + this.height - this.offset.bottom > mo.y + mo.offset.top && // Character UNTEN > Chicken OBEN
-      this.x + this.offset.left < mo.x + mo.width - mo.offset.right && // Character LINKE Seite < Chicken RECHTE Seite
+      this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+      this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+      this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
       this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
-    ); // Character OBEN < Chicken UNTEN
+    );
   }
 
+  /**
+   * Applies damage and updates hit timestamp.
+   */
   hit() {
     this.health -= 20;
     if (this.health < 0) {
       this.health = 0;
     } else {
-      this.lastHit = new Date().getTime(); // so speichert man einen Zeitpunkt (in Zahlenform)
+      this.lastHit = new Date().getTime();
     }
   }
 
-  isDead() { // Chicken --> die()?
+  /**
+   * Checks whether the object is dead.
+   * @returns {boolean}
+   */
+  isDead() {
     return this.health <= 0;
   }
 
+  /**
+   * Checks whether the object was recently hit.
+   * @returns {boolean}
+   */
   isHurt() {
-    let timePassed = new Date().getTime() - this.lastHit; // aktueller Zeitpunkt ./. Zeitpunkt des letzten Treffers (in ms)
-    timePassed = timePassed / 1000; // Millisekunden in Sekunden umrechnen
-    return timePassed < 1; // wenn wir innerhalb der letzten 1 Sekunde getroffen wurden --> true
+    let timePassed = new Date().getTime() - this.lastHit;
+    timePassed = timePassed / 1000;
+    return timePassed < 1;
   }
 
-  // playAnimation(images) {
-  //   let i = this.currentImage % images.length; // % "Modulu" = Rest (let i = % 6) --> fängt nach Ende des Arrays immer wieder von vorne an
-  //   let path = images[i];
-  //   this.img = this.imageCache[path];
-  //   this.currentImage++;
-  // }
-
+  /**
+   * Moves the object to the right.
+   */
   moveRight() {
     this.x += this.speed;
   }
 
+  /**
+   * Moves the object to the left.
+   */
   moveLeft() {
     this.x -= this.speed;
   }
 
+  /**
+   * Applies an upward impulse to the object.
+   */
   jump() {
     this.speedY = 30;
   }

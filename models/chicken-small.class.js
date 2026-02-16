@@ -1,3 +1,6 @@
+/**
+ * Represents a small chicken enemy.
+ */
 class ChickenSmall extends BasicEnemy {
   y = 378;
   height = 45;
@@ -14,6 +17,9 @@ class ChickenSmall extends BasicEnemy {
 
   offset = { top: 5, bottom: 10, left: 10, right: 10 };
 
+  /**
+   * Creates a ChickenSmall with randomized position and speed.
+   */
   constructor() {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);

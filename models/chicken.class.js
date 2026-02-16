@@ -1,3 +1,6 @@
+/**
+ * Represents a normal-sized chicken enemy.
+ */
 class Chicken extends BasicEnemy {
   y = 365;
   height = 60;
@@ -12,8 +15,13 @@ class Chicken extends BasicEnemy {
     "img/3_enemies_chicken/chicken_normal/1_walk/3_w.png"
   ];
 
-  IMAGES_DEAD = ["img/3_enemies_chicken/chicken_normal/2_dead/dead.png"];
+  IMAGES_DEAD = [
+    "img/3_enemies_chicken/chicken_normal/2_dead/dead.png"
+  ];
 
+  /**
+   * Creates a Chicken with randomized position and speed.
+   */
   constructor() {
     super().loadImage("img/3_enemies_chicken/chicken_normal/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);

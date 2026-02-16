@@ -1,3 +1,6 @@
+/**
+ * Status bar displaying the endboss health percentage.
+ */
 class StatusBarEndboss extends StatusBar {
   IMAGES = [
     "img/7_statusbars/2_statusbar_endboss/blue/blue0.png",
@@ -8,6 +11,9 @@ class StatusBarEndboss extends StatusBar {
     "img/7_statusbars/2_statusbar_endboss/blue/blue100.png"
   ];
 
+  /**
+   * Creates a StatusBarEndboss instance initialized at 100%.
+   */
   constructor() {
     super();
     this.x = 495;

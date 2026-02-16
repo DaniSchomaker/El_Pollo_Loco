@@ -1,6 +1,13 @@
+/**
+ * Base class for status bars.
+ * Handles percentage state and image resolution.
+ */
 class StatusBar extends DrawableObject {
   percentage = 0;
 
+  /**
+   * Creates a StatusBar with default dimensions.
+   */
   constructor() {
     super();
     this.width = 200;
@@ -8,21 +15,32 @@ class StatusBar extends DrawableObject {
     this.images = [];
   }
 
+  /**
+   * Loads status bar images.
+   * @param {string[]} images
+   */
   load(images) {
     this.images = images;
     this.loadImages(images);
   }
 
-  // // setPercentage (50);
+  /**
+   * Sets the current percentage and updates the displayed image.
+   * @param {number} percentage
+   */
   setPercentage(percentage) {
-    this.percentage = percentage; // => Zahl zwischen 0 und 5 ermitteln
-    let path = this.IMAGES[this.resolveImageIndex()]; // das passende Bild wird rausgesucht
+    this.percentage = percentage;
+    let path = this.IMAGES[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
+  /**
+   * Resolves the image index based on the current percentage.
+   * @returns {number}
+   */
   resolveImageIndex() {
     if (this.percentage == 100) {
-      return 5; // denn ich möchte das 5. Bild
+      return 5;
     } else if (this.percentage >= 80) {
       return 4;
     } else if (this.percentage >= 60) {

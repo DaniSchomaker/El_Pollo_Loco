@@ -1,3 +1,6 @@
+/**
+ * Status bar displaying the current coin percentage.
+ */
 class StatusBarCoin extends StatusBar {
   IMAGES = [
     "img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png",
@@ -8,6 +11,9 @@ class StatusBarCoin extends StatusBar {
     "img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png"
   ];
 
+  /**
+   * Creates a StatusBarCoin instance and initializes it with 0%.
+   */
   constructor() {
     super();
     this.x = 20;

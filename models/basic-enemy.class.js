@@ -1,5 +1,11 @@
+/**
+ * Base class for enemies.
+ * Provides shared movement, animation handling, and death behavior.
+ */
 class BasicEnemy extends MovableObject {
-  // Gemeinsame Bewegung + Animationsumschaltung
+  /**
+   * Starts enemy movement and animation intervals.
+   */
   animate() {
     setStoppableInterval(() => {
       if (this.dead) return;
@@ -15,14 +21,16 @@ class BasicEnemy extends MovableObject {
     }, 200);
   }
 
-  // Gemeinsamer Sterbe-Flow (wie zuvor)
+  /**
+   * Triggers the enemy death sequence and schedules removal.
+   */
   die() {
     if (this.dead) return;
     this.dead = true;
     this.speed = 0;
 
     setTimeout(() => {
-      this.markedForRemoval = true; // World räumt später auf
+      this.markedForRemoval = true;
     }, 800);
   }
 }

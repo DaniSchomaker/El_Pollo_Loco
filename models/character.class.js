@@ -1,23 +1,23 @@
+/**
+ * Represents the main player character.
+ * Handles movement, animations, idle/sleep behavior, throwing cooldowns, and camera control.
+ */
 class Character extends MovableObject {
-  // ——— Eigenschaften & Konstanten ———
   height = 280;
-  y = 90; // Muss noch geändert werden
+  y = 90;
   speed = 10;
   coins = 0;
   bottles = 0;
-  lastThrow = 0; // Zeitpunkt des letzten Wurfs in ms
+  lastThrow = 0;
   MAX_BOTTLES = 5;
 
-  // Zustandsflags
   isSleeping = false;
   isWalkingSoundPlaying = false;
 
-  // Konfiguration
   SLEEP_AFTER_SECONDS = 15;
   THROW_COOLDOWN_S = 0.3;
   CAMERA_OFFSET_X = 100;
 
-  // (1) Benannte Jump-Frames statt Magic Numbers
   JUMP_ASCEND_FRAME = 3;
   JUMP_DESCEND_FRAME = 7;
 
@@ -25,7 +25,6 @@ class Character extends MovableObject {
   deathStartTime = 0;
   DEATH_ANIMATION_MS = 350;
 
-  // ——— Sprites ———
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
     "img/2_character_pepe/2_walk/W-22.png",
@@ -34,6 +33,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-25.png",
     "img/2_character_pepe/2_walk/W-26.png",
   ];
+
   IMAGES_JUMPING = [
     "img/2_character_pepe/3_jump/J-31.png",
     "img/2_character_pepe/3_jump/J-32.png",
@@ -45,6 +45,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/3_jump/J-38.png",
     "img/2_character_pepe/3_jump/J-39.png",
   ];
+
   IMAGES_DEAD = [
     "img/2_character_pepe/5_dead/D-51.png",
     "img/2_character_pepe/5_dead/D-52.png",
@@ -54,11 +55,13 @@ class Character extends MovableObject {
     "img/2_character_pepe/5_dead/D-56.png",
     "img/2_character_pepe/5_dead/D-57.png",
   ];
+
   IMAGES_HURT = [
     "img/2_character_pepe/4_hurt/H-41.png",
     "img/2_character_pepe/4_hurt/H-42.png",
     "img/2_character_pepe/4_hurt/H-43.png",
   ];
+
   IMAGES_IDLE = [
     "img/2_character_pepe/1_idle/idle/I-1.png",
     "img/2_character_pepe/1_idle/idle/I-2.png",
@@ -71,6 +74,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/1_idle/idle/I-9.png",
     "img/2_character_pepe/1_idle/idle/I-10.png",
   ];
+
   IMAGES_SLEEP = [
     "img/2_character_pepe/1_idle/long_idle/I-11.png",
     "img/2_character_pepe/1_idle/long_idle/I-12.png",
@@ -82,12 +86,13 @@ class Character extends MovableObject {
     "img/2_character_pepe/1_idle/long_idle/I-18.png",
   ];
 
-  // ——— World & Kollision ———
-  world; // Zugriff auf's Keyboard über world
+  world;
   offset = { top: 120, bottom: 25, left: 30, right: 30 };
-  justStomped = false; // kurz nach Stomp keinen Gegenschaden kassieren
+  justStomped = false;
 
-  // ——— Konstruktor ———
+  /**
+   * Creates a Character instance, loads images, applies gravity, and starts animations.
+   */
   constructor() {
     super().loadImage("img/2_character_pepe/1_idle/idle/I-1.png");
     this.loadImages(this.IMAGES_WALKING);
@@ -102,18 +107,22 @@ class Character extends MovableObject {
     this.animate();
   }
 
-  // ——— Hauptschleifen ———
+  /**
+   * Starts the character update intervals.
+   */
   animate() {
     setStoppableInterval(() => this.handleMovement(), 1000 / 60);
     setStoppableInterval(() => this.updateAnimationState(), 50);
     setStoppableInterval(() => this.updateIdleAnimation(), 300);
   }
 
-  // ——— Bewegung/Input ———
+  /**
+   * Handles movement input and related updates per tick.
+   */
   handleMovement() {
     const keys = this.world.keyboard;
     let inputThrow = keys.D;
-    if (inputThrow) this.resetSleep(); // (2) lokal bleibt bestehen; an Quelle s.u.
+    if (inputThrow) this.resetSleep();
 
     let moved = this.handleHorizontalMovement();
     let jumped = this.handleJumpInput();
@@ -125,6 +134,10 @@ class Character extends MovableObject {
     this.lastY = this.y;
   }
 
+  /**
+   * Handles horizontal movement based on input.
+   * @returns {boolean}
+   */
   handleHorizontalMovement() {
     let moved = false;
 
@@ -143,16 +156,28 @@ class Character extends MovableObject {
     return moved;
   }
 
+  /**
+   * Checks whether the character can move right.
+   * @returns {boolean}
+   */
   canMoveRight() {
     const keys = this.world.keyboard;
     return keys.RIGHT && this.x < this.world.level.level_end_x;
   }
 
+  /**
+   * Checks whether the character can move left.
+   * @returns {boolean}
+   */
   canMoveLeft() {
     const keys = this.world.keyboard;
     return keys.LEFT && this.x > 0;
   }
 
+  /**
+   * Handles jump input and triggers a jump if possible.
+   * @returns {boolean}
+   */
   handleJumpInput() {
     const keys = this.world.keyboard;
     if (!keys.SPACE || this.isAboveGround()) return false;
@@ -161,7 +186,9 @@ class Character extends MovableObject {
     return true;
   }
 
-  // ——— Animationszustände (ohne Idle) ———
+  /**
+   * Updates the current non-idle animation state.
+   */
   updateAnimationState() {
     if (this.isDead()) {
       this.startDeathSequence();
@@ -186,15 +213,26 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Determines whether the character is in a jumping state.
+   * @returns {boolean}
+   */
   isJumpingState() {
     return this.isAboveGround();
   }
 
+  /**
+   * Determines whether the character is in a walking state.
+   * @returns {boolean}
+   */
   isWalkingState() {
     const keys = this.world.keyboard;
     return keys.RIGHT || keys.LEFT;
   }
 
+  /**
+   * Adjusts jump animation frames based on vertical speed.
+   */
   applyJumpFrameCorrections() {
     if (this.speedY > 0 && this.currentImage > this.JUMP_ASCEND_FRAME) {
       this.currentImage = this.JUMP_ASCEND_FRAME;
@@ -204,7 +242,9 @@ class Character extends MovableObject {
     }
   }
 
-  // ——— Idle / Sleep ———
+  /**
+   * Updates idle/sleep animations depending on player inactivity.
+   */
   updateIdleAnimation() {
     const keys = this.world.keyboard;
 
@@ -222,7 +262,11 @@ class Character extends MovableObject {
     }
   }
 
-  // Idle/Sleep-Helfer
+  /**
+   * Determines whether the character should be considered idle.
+   * @param {Keyboard} keys
+   * @returns {boolean}
+   */
   isIdleState(keys) {
     return (
       !this.isDead() &&
@@ -235,15 +279,25 @@ class Character extends MovableObject {
     );
   }
 
+  /**
+   * Returns seconds since last action.
+   * @returns {number}
+   */
   getInactiveSeconds() {
     return (Date.now() - this.lastActionTime) / 1000;
   }
 
+  /**
+   * Plays the idle animation.
+   */
   playIdle() {
     if (this.isSleeping) this.resetSleep();
     this.playAnimation(this.IMAGES_IDLE);
   }
 
+  /**
+   * Plays the sleep animation and starts snoring sound if available.
+   */
   playSleep() {
     if (!this.isSleeping) {
       this.isSleeping = true;
@@ -255,6 +309,9 @@ class Character extends MovableObject {
     this.playAnimation(this.IMAGES_SLEEP);
   }
 
+  /**
+   * Resets sleep state and stops snoring sound if active.
+   */
   resetSleep() {
     if (this.isSleeping) {
       this.isSleeping = false;
@@ -265,50 +322,71 @@ class Character extends MovableObject {
     }
   }
 
-  // ——— Sonstige Helfer ———
+  /**
+   * Triggers a jump and handles related sound state.
+   */
   handleJump() {
     this.jump();
     SoundHub.playOne(SoundHub.jump);
 
-    // (3) Walking-Sound über Hub kapseln
     if (this.isWalkingSoundPlaying) {
       SoundHub.stopWalking();
       this.isWalkingSoundPlaying = false;
     }
   }
 
+  /**
+   * Updates walking sound playback based on movement state.
+   * @param {boolean} moving
+   */
   updateWalkingSound(moving) {
     if (moving && !this.isWalkingSoundPlaying) {
-      SoundHub.startWalking(); // (3)
+      SoundHub.startWalking();
       this.isWalkingSoundPlaying = true;
       return;
     }
 
     if (!moving && this.isWalkingSoundPlaying) {
-      SoundHub.stopWalking(); // (3)
+      SoundHub.stopWalking();
       this.isWalkingSoundPlaying = false;
     }
   }
 
+  /**
+   * Updates last action timestamp when any action happened.
+   * @param {boolean} didAction
+   */
   updateActionTime(didAction) {
     if (didAction) this.lastActionTime = Date.now();
   }
 
+  /**
+   * Updates the camera position based on the character x-position.
+   */
   updateCameraPosition() {
     this.world.camera_x = -this.x + this.CAMERA_OFFSET_X;
   }
 
+  /**
+   * Checks whether the character can throw based on cooldown.
+   * @returns {boolean}
+   */
   canThrow() {
     let timePassed = (Date.now() - this.lastThrow) / 1000;
     return timePassed > this.THROW_COOLDOWN_S;
   }
 
-  // (2) Quelle-API: kann von World bei Wurf/anderen Aktionen aufgerufen werden
+  /**
+   * Resets sleep state and updates last action time for external actions.
+   */
   wakeFromAction() {
     this.resetSleep();
     this.lastActionTime = Date.now();
   }
 
+  /**
+   * Initializes the death animation sequence.
+   */
   startDeathSequence() {
     if (this.deathStarted) return;
     this.deathStarted = true;
@@ -319,6 +397,10 @@ class Character extends MovableObject {
     this.isWalkingSoundPlaying = false;
   }
 
+  /**
+   * Checks whether the death animation duration has elapsed.
+   * @returns {boolean}
+   */
   isDeathAnimationFinished() {
     if (!this.deathStarted) return false;
     return Date.now() - this.deathStartTime >= this.DEATH_ANIMATION_MS;

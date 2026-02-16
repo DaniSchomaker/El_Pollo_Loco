@@ -1,3 +1,6 @@
+/**
+ * Status bar displaying the character health percentage.
+ */
 class StatusBarHealth extends StatusBar {
   IMAGES = [
     "img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png",
@@ -8,6 +11,9 @@ class StatusBarHealth extends StatusBar {
     "img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png",
   ];
 
+  /**
+   * Creates a StatusBarHealth instance initialized at 100%.
+   */
   constructor() {
     super();
     this.x = 20;
@@ -16,3 +22,4 @@ class StatusBarHealth extends StatusBar {
     this.setPercentage(100);
   }
 }
+

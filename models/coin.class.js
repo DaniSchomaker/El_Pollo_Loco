@@ -1,3 +1,6 @@
+/**
+ * Represents a collectible coin object in the game world.
+ */
 class Coin extends CollectableObject {
   IMAGES = [
     "img/8_coin/coin_1.png",
@@ -5,13 +8,15 @@ class Coin extends CollectableObject {
   ];
 
   offset = {
-    // für die Collision: innerer roter Kasten
     top: 55,
     bottom: 55,
     left: 35,
     right: 35,
   };
 
+  /**
+   * Creates a Coin with animation and random position.
+   */
   constructor() {
     super();
     this.loadImages(this.IMAGES);
@@ -20,10 +25,14 @@ class Coin extends CollectableObject {
     this.animate();
   }
 
+  /**
+   * Starts the coin animation loop.
+   */
   animate() {
     setStoppableInterval(() => {
       this.playAnimation(this.IMAGES);
     }, 700);
   }
 }
+
 

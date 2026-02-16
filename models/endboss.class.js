@@ -1,3 +1,6 @@
+/**
+ * Represents the endboss enemy with activation, alert, attack, hurt, and death states.
+ */
 class Endboss extends MovableObject {
   height = 400;
   width = 250;
@@ -59,6 +62,9 @@ class Endboss extends MovableObject {
   hurt_duration_ms = 600;
   alert_duration_ms = 1200;
 
+  /**
+   * Creates an Endboss instance, loads images, and starts animation logic.
+   */
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
 
@@ -74,6 +80,9 @@ class Endboss extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Activates the endboss behavior and schedules alert and attack timings.
+   */
   activate() {
     if (this.is_active) return;
 
@@ -85,6 +94,9 @@ class Endboss extends MovableObject {
       now + this.alert_duration_ms + this.attack_cooldown_ms;
   }
 
+  /**
+   * Applies damage and sets hurt timing.
+   */
   hit() {
     super.hit();
     const now = Date.now();
@@ -92,8 +104,10 @@ class Endboss extends MovableObject {
     this.attack_until = 0;
   }
 
+  /**
+   * Starts animation state updates and movement/attack timing.
+   */
   animate() {
-    // Animation-State (welche Bilder laufen)
     setStoppableInterval(() => {
       const now = Date.now();
 
@@ -117,21 +131,17 @@ class Endboss extends MovableObject {
         return;
       }
 
-      // Default: laufen
       this.playAnimation(this.IMAGES_WALKING);
     }, 200);
 
-    // Bewegung + Attack-Taktung
     setStoppableInterval(() => {
       if (!this.is_active) return;
       if (this.isDead()) return;
 
       const now = Date.now();
 
-      // während Alert: noch nicht loslaufen
       if (now < this.alert_until) return;
 
-      // Attack-Burst zyklisch starten (nur wenn nicht gerade hurt)
       if (now >= this.next_attack_at && now >= this.hurt_until) {
         this.attack_until = now + this.attack_duration_ms;
         this.next_attack_at = now + this.attack_cooldown_ms;
