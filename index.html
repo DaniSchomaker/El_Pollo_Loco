@@ -8,55 +8,70 @@
     />
     <title>El Pollo Loco</title>
 
+    <!-- Styles -->
     <link rel="icon" type="image/x-icon" href="./img/Favicon.png" />
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./styles/fonts.css" />
 
+    <!-- Core Systems -->
     <script src="./models/keyboard.class.js"></script>
-    <script src="./js/game.js"></script>
     <script src="./models/soundHub.class.js"></script>
+    <script src="./js/game.js"></script>
 
+    <!-- Base Classes -->
     <script src="./models/drawable-object.class.js"></script>
     <script src="./models/movable-object.class.js"></script>
 
+    <!-- UI: Status Bars -->
     <script src="./models/status-bar.class.js"></script>
     <script src="./models/status-bar-health.class.js"></script>
     <script src="./models/status-bar-coin.class.js"></script>
     <script src="./models/status-bar-bottle.class.js"></script>
     <script src="./models/status-bar-endboss.class.js"></script>
 
+    <!-- Collectables -->
     <script src="./models/collectable-object.class.js"></script>
-    <script src="./models/bottle.class.js"></script>
     <script src="./models/coin.class.js"></script>
+    <script src="./models/bottle.class.js"></script>
 
-    <script src="./models/character.class.js"></script>
+    <!-- Environment -->
+    <script src="./models/background-object.class.js"></script>
+    <script src="./models/cloud.class.js"></script>
+
+    <!-- Enemies -->
     <script src="./models/basic-enemy.class.js"></script>
     <script src="./models/chicken.class.js"></script>
     <script src="./models/chicken-small.class.js"></script>
     <script src="./models/endboss.class.js"></script>
-    <script src="./models/cloud.class.js"></script>
-    <script src="./models/background-object.class.js"></script>
+
+    <!-- Player & Weapons -->
+    <script src="./models/character.class.js"></script>
     <script src="./models/throwable-object.class.js"></script>
 
+    <!-- Level System -->
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
+
+    <!-- World -->
     <script src="./models/world.class.js"></script>
   </head>
 
   <body class="page_game" onload="SoundHub.getFromLocalStorage()">
+    <!-- Rotate Overlay -->
     <div class="rotate_overlay">
       <img
         class="rotate_overlay_img"
         src="./img/rotate_phone.png"
-        alt="Bitte drehe Dein Handy"
+        alt="Rotate device"
       />
     </div>
 
+    <!-- Title -->
     <h1 class="game-title">El Pollo Loco</h1>
 
     <div class="game_screen">
       <div class="game_wrapper">
-        <!-- Soundbar  -->
+        <!-- Sound Control -->
         <div class="soundbar">
           <button
             id="sound_toggle"
@@ -67,7 +82,7 @@
           </button>
         </div>
 
-        <!-- Startscreen  -->
+        <!-- Start Screen -->
         <div id="start_screen" class="start_screen">
           <img
             class="start_screen_img"
@@ -80,12 +95,12 @@
           </button>
 
           <div class="endscreen_links startscreen_links">
-            <!-- endscreen-links-Klasse? -->
             <a href="./impressum.html" class="button">Impressum</a>
             <button class="button" onclick="openControls()">Controls</button>
           </div>
         </div>
 
+        <!-- Controls Overlay -->
         <div
           id="controls_overlay"
           class="controls_overlay d_none"
@@ -102,23 +117,22 @@
             </button>
 
             <ul class="controls_list">
-              <li><b>Move: </b>← / →</li>
-              <li><b>Jump: </b>Space</li>
-              <li><b>Throw: </b>D</li>
+              <li><b>Move:</b> ← / →</li>
+              <li><b>Jump:</b> Space</li>
+              <li><b>Throw:</b> D</li>
             </ul>
           </div>
         </div>
 
-        <!-- Canvas  -->
-        <canvas id="canvas" width="720" height="480"> </canvas>
+        <!-- Canvas -->
+        <canvas id="canvas" width="720" height="480"></canvas>
 
-        <!-- Endscreen  -->
+        <!-- End Screen -->
         <div id="endscreen" class="endscreen d_none">
           <img id="endscreen_img" src="" alt="Endscreen" />
 
           <div class="endscreen_top_buttons">
             <button class="button" onclick="restartGame()">Play again</button>
-
             <button class="button" onclick="backToHome()">Back Home</button>
           </div>
 
@@ -128,13 +142,12 @@
           </div>
         </div>
 
-        <!-- Mobile Controls  -->
+        <!-- Mobile Controls -->
         <div class="controls_mobile">
           <div class="controls_mobile_left">
             <button class="button_mobile" id="button_left">
               <img src="./img/icons/left_mobile.png" alt="move left" />
             </button>
-
             <button class="button_mobile" id="button_right">
               <img src="./img/icons/right_mobile.png" alt="move right" />
             </button>
@@ -144,7 +157,6 @@
             <button class="button_mobile" id="button_jump">
               <img src="./img/icons/jump_mobile.png" alt="jump" />
             </button>
-
             <button class="button_mobile" id="button_throw">
               <img src="./img/icons/bottle_mobile.png" alt="throw" />
             </button>

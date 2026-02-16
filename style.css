@@ -1,13 +1,15 @@
+/* ================================================= */
+/* Base                                               */
+/* ================================================= */
+
 body {
   margin: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* justify-content: center; */
   background-image: url("img/5_background/desert.png");
   background-size: cover;
-  /* background-position: center; */
   font-family: "Fredoka", sans-serif;
 }
 
@@ -25,10 +27,8 @@ h1 {
 }
 
 h2 {
-  /* font-family: "Rye", serif; */
   font-size: 28px;
   margin: 0;
-  /* margin-bottom: 8px; */
 }
 
 p {
@@ -40,6 +40,10 @@ a {
   text-decoration: none;
   text-align: center;
 }
+
+/* ================================================= */
+/* Layout Containers                                  */
+/* ================================================= */
 
 .game_screen {
   position: relative;
@@ -62,12 +66,15 @@ a {
   margin: 0 auto;
 }
 
+/* ================================================= */
+/* Rotate Overlay                                     */
+/* ================================================= */
+
 .rotate_overlay {
   position: fixed;
   inset: 0;
   background-color: black;
   z-index: 9999;
-
   display: none;
   justify-content: center;
   align-items: center;
@@ -78,9 +85,9 @@ a {
   max-height: 80%;
 }
 
-/* ----------------------------- */
-/* Start Screen */
-/* ----------------------------- */
+/* ================================================= */
+/* Start Screen                                       */
+/* ================================================= */
 
 .start_screen {
   position: absolute;
@@ -89,12 +96,10 @@ a {
   width: 720px;
   height: 480px;
   z-index: 10;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-
   background-color: black;
 }
 
@@ -110,7 +115,6 @@ a {
   left: 50%;
   transform: translateX(-50%);
   z-index: 11;
-
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -122,17 +126,9 @@ a {
   width: 180px;
 }
 
-/* ----------------------------- */
-/* Mobile Controls (default: hidden) */
-/* ----------------------------- */
-
-.controls_mobile {
-  display: none;
-}
-
-/* ----------------------------- */
-/* Controls Overlay */
-/* ----------------------------- */
+/* ================================================= */
+/* Controls Overlay                                   */
+/* ================================================= */
 
 .controls_overlay {
   position: absolute;
@@ -154,7 +150,6 @@ a {
   padding: 20px 20px 16px 0px;
   text-align: center;
   color: white;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -185,24 +180,26 @@ a {
 
 .controls_list {
   list-style: none;
-  /* margin: 16px 0 0 60px; */
   margin: 16px 0 0 0;
   padding: 0;
   text-align: left;
   font-size: 18px;
-  /* border: 2px red solid; */
 }
 
 .controls_list li {
   padding: 8px 0;
 }
 
+/* ================================================= */
+/* Sound Control                                      */
+/* ================================================= */
+
 .soundbar {
   position: absolute;
   top: 20px;
   left: 50%;
-  transform: translateX(-50%); /* zentriert horizontal */
-  z-index: 5; /* liegt über dem Canvas */
+  transform: translateX(-50%);
+  z-index: 5;
   border: none;
 }
 
@@ -224,28 +221,9 @@ a {
   transition: transform 0.1s ease;
 }
 
-.button:hover,
-.soundbar img:hover {
-  transform: scale(1.04);
-}
-
-.button:active,
-.soundbar img:active {
-  transform: scale(0.98);
-}
-/* .endscreen {
-  position: fixed;
-  inset: 0; 
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  z-index: 10; 
-  text-align: center;
-} */
+/* ================================================= */
+/* End Screen                                         */
+/* ================================================= */
 
 .endscreen {
   position: absolute;
@@ -271,24 +249,11 @@ a {
   z-index: 1;
 }
 
-.button_mobile,
-.button_mobile img {
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-}
-
-
-/* ============================= */
-/* Endscreen Top Buttons         */
-/* ============================= */
-
 .endscreen_top_buttons {
   position: absolute;
   top: 16px;
   left: 0;
   right: 0;
-
   display: flex;
   justify-content: center;
   gap: 40px;
@@ -301,8 +266,37 @@ a {
   width: 160px;
 }
 
+.endscreen_links {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 0 16px;
+}
 
-/* Hover für zentrierte Buttons */
+.endscreen_links .button {
+  position: static;
+  width: 160px;
+}
+
+/* ================================================= */
+/* Buttons                                            */
+/* ================================================= */
+
+.button:hover,
+.soundbar img:hover {
+  transform: scale(1.04);
+}
+
+.button:active,
+.soundbar img:active {
+  transform: scale(0.98);
+}
+
 .start_game:hover,
 .endscreen_restart:hover {
   transform: translateX(-50%) scale(1.04);
@@ -313,7 +307,6 @@ a {
   transform: translateX(-50%) scale(0.98);
 }
 
-/* Basis-Button-Style (absolut für z.B. Start-Button) */
 .button {
   position: absolute;
   width: 160px;
@@ -337,61 +330,24 @@ a {
   margin-top: 16px;
   width: 240px;
   text-align: center;
-  /* top: 16px;
-  left: 16px;
-  z-index: 10;
-  width: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center; */
 }
 
-/* Start-Button oben*/
 .start_game {
   top: 16px;
   left: 50%;
   transform: translateX(-50%);
 }
 
-/* Impressum/Credits-Button unten */
-.endscreen_links {
-  position: absolute;
-  bottom: 16px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-  padding: 0 16px;
-}
-
-.endscreen_links .button {
-  position: static;
-  width: 160px;
-}
-
-.d_none {
-  display: none;
-}
-
-/* ////// impressum & credits ////// */
-.padding24px {
-  padding: 24px;
-}
-
-.email {
-  color: black;
-}
+/* ================================================= */
+/* Mobile Controls                                    */
+/* ================================================= */
 
 .controls_mobile {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 20;
-
   display: none;
-
   justify-content: space-between;
   align-items: flex-end;
   padding: 8px 16px;
@@ -413,21 +369,37 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .button_mobile img {
   width: 70%;
   height: 70%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
+
 /* ================================================= */
-/* DEFAULT: Mobile controls hidden                  */
+/* Utility                                            */
 /* ================================================= */
 
-.controls_mobile {
+.d_none {
   display: none;
 }
+
+.padding24px {
+  padding: 24px;
+}
+
+.email {
+  color: black;
+}
+
 /* ================================================= */
-/* TOUCH DEVICES (Basis)                            */
+/* Touch Devices                                      */
 /* ================================================= */
 
 @media (pointer: coarse) and (max-width: 1400px) {
@@ -437,7 +409,7 @@ a {
 }
 
 /* ================================================= */
-/* PHONE PORTRAIT → Rotate Overlay                  */
+/* Phone Portrait                                     */
 /* ================================================= */
 
 @media (pointer: coarse) and (orientation: portrait) {
@@ -455,7 +427,7 @@ a {
 }
 
 /* ================================================= */
-/* PHONE LANDSCAPE (kleine Geräte)                  */
+/* Phone Landscape (Small Devices)                    */
 /* ================================================= */
 
 @media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
@@ -479,7 +451,6 @@ a {
     max-width: none;
     max-height: none;
     aspect-ratio: auto;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -519,7 +490,7 @@ a {
 }
 
 /* ================================================= */
-/* TABLET LANDSCAPE                                 */
+/* Tablet Landscape                                   */
 /* ================================================= */
 
 @media (pointer: coarse) and (max-width: 1400px) and (orientation: landscape) and (min-height: 600px) {
@@ -565,8 +536,6 @@ a {
     object-position: center;
     display: block;
   }
-
-  /* ---------- Tablet Button Position ---------- */
 
   body.game_running .controls_mobile {
     position: fixed;
