@@ -7,27 +7,37 @@ let i = 1; // brauche ich das?
 
 let gameStarted = false;
 
+
 function startGame() {
-  if (gameStarted) {
-    return;
+  startNewGame();
+}
+
+function startNewGame() {
+  stopGame();
+
+  if (world) {
+    world.stop();
+    world = null;
   }
+
+  initLevel();
+  init();
+
+  hideStartScreen();
+  hideEndscreen();
 
   gameStarted = true;
-  initLevel();
-  hideStartScreen();
-  init();
   showMobileControls();
 
-  if (!SoundHub.isMuted) {
-    SoundHub.playLoop(SoundHub.mainTheme);
-  }
+  // Musik fürs Gameplay wieder starten (playLoop macht nix, wenn gemutet)
+  SoundHub.playLoop(SoundHub.mainTheme);
 }
 
 
-function hideStartScreen() {
-  const startScreen = document.getElementById("start_screen");
-  startScreen.classList.add("d_none");
-}
+
+
+
+
 
 function openControls() {
   const overlay = document.getElementById("controls_overlay");
@@ -47,17 +57,6 @@ function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
 }
-
-// function startGame() {
-
-// document.getElementById('end_screen_winner').classList.add('d_none');
-// document.getElementById('gameOverScreen').classList.add('d_none');
-// document.getElementById('startScreenContainer').classList.add('d_none');
-// document.getElementById('hud').classList.remove('d_none');
-// document.getElementById('canvas').style.display = "block";
-
-// init();
-// }
 
 function showEndscreen(type) {
   const screen = document.getElementById("endscreen");
@@ -83,21 +82,9 @@ function showEndscreen(type) {
 }
 
 function restartGame() {
-  hideMobileControls();
-  const endscreen = document.getElementById("endscreen");
-  endscreen.classList.add("d_none");
-
-  stopGame();
-  world.stop();
-
-  initLevel();
-  gameStarted = false;
-  startGame();
-
-  if (!SoundHub.isMuted) {
-    SoundHub.playLoop(SoundHub.mainTheme);
-  }
+  startNewGame();
 }
+
 
 function setStoppableInterval(fn, time) {
   let id = setInterval(fn, time);
@@ -119,22 +106,39 @@ function hideMobileControls() {
 }
 
 function backToHome() {
-  const endscreen = document.getElementById("endscreen");
-  endscreen.classList.add("d_none");
-
-  hideMobileControls();
-
   stopGame();
-  world.stop();
-  world = null;
 
-  gameStarted = false;
-
-  const startScreen = document.getElementById("start_screen");
-  startScreen.classList.remove("d_none");
+  if (world) {
+    world.stop();
+    world = null;
+  }
 
   SoundHub.pauseAll();
+  hideMobileControls();
+
+  showStartScreen();
+  hideEndscreen();
+
+  gameStarted = false;
 }
+
+
+
+/* ===== Screens ===== */
+
+function hideStartScreen() {
+  document.getElementById("start_screen").classList.add("d_none");
+}
+
+function showStartScreen() {
+  document.getElementById("start_screen").classList.remove("d_none");
+}
+
+function hideEndscreen() {
+  document.getElementById("endscreen").classList.add("d_none");
+}
+
+
 
 
 
