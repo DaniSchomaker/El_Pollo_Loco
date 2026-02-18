@@ -1,5 +1,6 @@
 /**
  * Represents the endboss enemy with activation, alert, attack, hurt, and death states.
+ * Handles animation switching, movement logic, and timed combat behavior.
  */
 class Endboss extends MovableObject {
   height = 400;
@@ -63,7 +64,9 @@ class Endboss extends MovableObject {
   alert_duration_ms = 1200;
 
   /**
-   * Creates an Endboss instance, loads images, and starts animation logic.
+   * Creates an Endboss instance.
+   * Loads all animation images, sets initial position and speed,
+   * and starts animation and movement intervals.
    */
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
@@ -81,7 +84,11 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Activates the endboss behavior and schedules alert and attack timings.
+   * Activates the endboss behavior.
+   * Starts the alert phase and schedules the first possible attack.
+   * Does nothing if already active.
+   *
+   * @returns {void}
    */
   activate() {
     if (this.is_active) return;
@@ -95,7 +102,10 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Applies damage and sets hurt timing.
+   * Applies damage to the endboss.
+   * Triggers the hurt phase and interrupts any ongoing attack.
+   *
+   * @returns {void}
    */
   hit() {
     super.hit();
@@ -105,49 +115,145 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Starts animation state updates and movement/attack timing.
+   * Starts animation and movement update intervals.
+   * Animation runs slower than movement logic.
+   *
+   * @returns {void}
    */
   animate() {
-    setStoppableInterval(() => {
-      const now = Date.now();
+    setStoppableInterval(() => this.updateAnimation(), 200);
+    setStoppableInterval(() => this.updateMovement(), 50);
+  }
 
-      if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-        return;
-      }
+  /**
+   * Updates the current animation state depending on boss status and timers.
+   * Priority order:
+   * Dead → Hurt → Alert → Attack → Walking
+   *
+   * @returns {void}
+   */
+  updateAnimation() {
+    const now = Date.now();
 
-      if (now < this.hurt_until) {
-        this.playAnimation(this.IMAGES_HURT);
-        return;
-      }
+    if (this.shouldPlayDead()) {
+      this.playAnimation(this.IMAGES_DEAD);
+      return;
+    }
 
-      if (this.is_active && now < this.alert_until) {
-        this.playAnimation(this.IMAGES_ALERT);
-        return;
-      }
+    if (this.shouldPlayHurt(now)) {
+      this.playAnimation(this.IMAGES_HURT);
+      return;
+    }
 
-      if (this.is_active && now < this.attack_until) {
-        this.playAnimation(this.IMAGES_ATTACK);
-        return;
-      }
+    if (this.shouldPlayAlert(now)) {
+      this.playAnimation(this.IMAGES_ALERT);
+      return;
+    }
 
-      this.playAnimation(this.IMAGES_WALKING);
-    }, 200);
+    if (this.shouldPlayAttack(now)) {
+      this.playAnimation(this.IMAGES_ATTACK);
+      return;
+    }
 
-    setStoppableInterval(() => {
-      if (!this.is_active) return;
-      if (this.isDead()) return;
+    this.playAnimation(this.IMAGES_WALKING);
+  }
 
-      const now = Date.now();
+  /**
+   * Updates movement and attack timing.
+   * Handles attack triggering and horizontal movement.
+   *
+   * @returns {void}
+   */
+  updateMovement() {
+    if (!this.canMove()) return;
 
-      if (now < this.alert_until) return;
+    const now = Date.now();
 
-      if (now >= this.next_attack_at && now >= this.hurt_until) {
-        this.attack_until = now + this.attack_duration_ms;
-        this.next_attack_at = now + this.attack_cooldown_ms;
-      }
+    if (this.isStillAlerting(now)) return;
 
-      this.moveLeft();
-    }, 50);
+    if (this.shouldTriggerAttack(now)) {
+      this.triggerAttack(now);
+    }
+
+    this.moveLeft();
+  }
+
+  /**
+   * Determines whether the dead animation should be played.
+   *
+   * @returns {boolean}
+   */
+  shouldPlayDead() {
+    return this.isDead();
+  }
+
+  /**
+   * Determines whether the hurt animation should be played.
+   *
+   * @param {number} now - Current timestamp.
+   * @returns {boolean}
+   */
+  shouldPlayHurt(now) {
+    return now < this.hurt_until;
+  }
+
+  /**
+   * Determines whether the alert animation should be played.
+   *
+   * @param {number} now - Current timestamp.
+   * @returns {boolean}
+   */
+  shouldPlayAlert(now) {
+    return this.is_active && now < this.alert_until;
+  }
+
+  /**
+   * Determines whether the attack animation should be played.
+   *
+   * @param {number} now - Current timestamp.
+   * @returns {boolean}
+   */
+  shouldPlayAttack(now) {
+    return this.is_active && now < this.attack_until;
+  }
+
+  /**
+   * Checks whether the boss is allowed to move.
+   *
+   * @returns {boolean}
+   */
+  canMove() {
+    return this.is_active && !this.isDead();
+  }
+
+  /**
+   * Determines whether the boss is still in the alert phase.
+   *
+   * @param {number} now - Current timestamp.
+   * @returns {boolean}
+   */
+  isStillAlerting(now) {
+    return now < this.alert_until;
+  }
+
+  /**
+   * Determines whether a new attack should be triggered.
+   *
+   * @param {number} now - Current timestamp.
+   * @returns {boolean}
+   */
+  shouldTriggerAttack(now) {
+    return now >= this.next_attack_at && now >= this.hurt_until;
+  }
+
+  /**
+   * Triggers an attack phase and schedules the next attack window.
+   *
+   * @param {number} now - Current timestamp.
+   * @returns {void}
+   */
+  triggerAttack(now) {
+    this.attack_until = now + this.attack_duration_ms;
+    this.next_attack_at = now + this.attack_cooldown_ms;
   }
 }
